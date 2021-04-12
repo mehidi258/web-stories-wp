@@ -26,25 +26,19 @@ import { __ } from '@web-stories-wp/i18n';
 import { useState } from 'react';
 import { SimplePanel } from '../../panel';
 import {
+  Button,
+  BUTTON_SIZES,
+  BUTTON_TYPES,
+  BUTTON_VARIANTS,
   DropDown,
+  TextArea,
   Input,
   PLACEMENT,
-  ThemeGlobals,
 } from '../../../../../design-system';
 import { Row } from '../../../form';
-import { MIN_MAX } from '../slug/slug';
 
-const PermalinkRow = styled(Row)`
+const FieldRow = styled(Row)`
   margin-bottom: 12px;
-
-  input {
-    color: ${({ theme }) => theme.colors.fg.tertiary};
-    :active,
-    :focus,
-    .${ThemeGlobals.FOCUS_VISIBLE_SELECTOR} {
-      color: ${({ theme }) => theme.colors.fg.primary};
-    }
-  }
 `;
 
 const ctaOptions = [
@@ -134,14 +128,30 @@ const ctaOptions = [
   },
 ];
 
+const landPageOptions = [
+  {
+    label: __('Sponsored Story', 'web-stories'),
+    value: 'STORY',
+  },
+  {
+    label: __('AMP Page', 'web-stories'),
+    value: 'AMP',
+  },
+  {
+    label: __('Any Webpage', 'web-stories'),
+    value: 'NONAMP',
+  },
+];
+
 function StoryAdPanel() {
-  const [selectedValue, setSelectedValue] = useState(ctaOptions[2].value);
+  const [ctaLink, setCTALink] = useState('');
+  const [selectedCtaText, setSelectedCtaText] = useState(ctaOptions[2].value);
+  const [selectedPageLandingType, setSelectedPageLandingType] = useState(
+    landPageOptions[1].value
+  );
+  const [showTextArea, setTextAreaVisibility] = useState(false);
 
-  const handleChange = function () {};
-
-  const handleBlur = function () {};
-
-  const ctaLink = '';
+  const handleChange = (event) => setCTALink(event.currentTarget.value);
 
   return (
     <SimplePanel
@@ -149,33 +159,65 @@ function StoryAdPanel() {
       title={__('Story Ad', 'web-stories')}
       collapsedByDefault
     >
-      <PermalinkRow>
+      <FieldRow>
         <Input
           value={ctaLink}
           onChange={handleChange}
-          onBlur={handleBlur}
           placeholder={__('Enter CTA Link', 'web-stories')}
           aria-label={__('CTA Link', 'web-stories')}
-          minLength={MIN_MAX.PERMALINK.MIN}
-          maxLength={MIN_MAX.PERMALINK.MAX}
         />
-      </PermalinkRow>
+      </FieldRow>
 
-      <DropDown
-        emptyText={__('No options available', 'web-stories')}
-        options={ctaOptions}
-        hasError={false}
-        hint={''}
-        placeholder={__('Select CTA Text', 'web-stories')}
-        dropDownLabel={__('CTA Text', 'web-stories')}
-        isKeepMenuOpenOnSelection={false}
-        isRTL={false}
-        selectedValue={selectedValue}
-        onMenuItemClick={(event, newValue) => {
-          setSelectedValue(newValue);
-        }}
-        placement={PLACEMENT.BOTTOM}
-      />
+      <FieldRow>
+        <DropDown
+          emptyText={__('No options available', 'web-stories')}
+          options={ctaOptions}
+          hasError={false}
+          hint={''}
+          placeholder={__('Select CTA Text', 'web-stories')}
+          dropDownLabel={__('CTA Text', 'web-stories')}
+          isKeepMenuOpenOnSelection={false}
+          isRTL={false}
+          selectedValue={selectedCtaText}
+          onMenuItemClick={(event, newValue) => {
+            setSelectedCtaText(newValue);
+          }}
+          placement={PLACEMENT.BOTTOM}
+        />
+      </FieldRow>
+
+      <FieldRow>
+        <DropDown
+          emptyText={__('No options available', 'web-stories')}
+          options={landPageOptions}
+          hasError={false}
+          hint={''}
+          placeholder={__('Select Landing Page Type', 'web-stories')}
+          dropDownLabel={__('Landing Page Type', 'web-stories')}
+          isKeepMenuOpenOnSelection={false}
+          isRTL={false}
+          selectedValue={selectedPageLandingType}
+          onMenuItemClick={(event, newValue) => {
+            setSelectedPageLandingType(newValue);
+          }}
+          placement={PLACEMENT.BOTTOM}
+        />
+      </FieldRow>
+      <FieldRow>
+        <Button
+          type={BUTTON_TYPES.SECONDARY}
+          variant={BUTTON_VARIANTS.RECTANGLE}
+          size={BUTTON_SIZES.SMALL}
+          onClick={() => setTextAreaVisibility(true)}
+        >
+          {__('Export', 'web-stories')}
+        </Button>
+      </FieldRow>
+      {showTextArea ? (
+        <FieldRow>
+          <TextArea hint={__('Copy Ad Markup', 'web-stories')} />
+        </FieldRow>
+      ) : null}
     </SimplePanel>
   );
 }
