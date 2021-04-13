@@ -31,11 +31,12 @@ import {
   BUTTON_TYPES,
   BUTTON_VARIANTS,
   DropDown,
-  TextArea,
   Input,
   PLACEMENT,
+  TextArea,
 } from '../../../../../design-system';
 import { Row } from '../../../form';
+import { useStory } from '../../../../app';
 
 const FieldRow = styled(Row)`
   margin-bottom: 12px;
@@ -144,12 +145,31 @@ const landPageOptions = [
 ];
 
 function StoryAdPanel() {
+  const { updateStory } = useStory(({ actions: { updateStory } }) => ({
+    updateStory,
+  }));
+
   const [ctaLink, setCTALink] = useState('');
   const [selectedCtaText, setSelectedCtaText] = useState(ctaOptions[2].value);
-  const [selectedPageLandingType, setSelectedPageLandingType] = useState(
+  const [selectedLandingPageType, setSelectedPageLandingType] = useState(
     landPageOptions[1].value
   );
   const [showTextArea, setTextAreaVisibility] = useState(false);
+
+  const updateValues = () => {
+    updateStory({
+      properties: {
+        ctaLink,
+        ctaText: selectedCtaText,
+        landingPageType: selectedLandingPageType,
+      },
+    });
+  };
+
+  const exportStoryAd = () => {
+    setTextAreaVisibility(true);
+    updateValues();
+  };
 
   const handleChange = (event) => setCTALink(event.currentTarget.value);
 
@@ -196,7 +216,7 @@ function StoryAdPanel() {
           dropDownLabel={__('Landing Page Type', 'web-stories')}
           isKeepMenuOpenOnSelection={false}
           isRTL={false}
-          selectedValue={selectedPageLandingType}
+          selectedValue={selectedLandingPageType}
           onMenuItemClick={(event, newValue) => {
             setSelectedPageLandingType(newValue);
           }}
@@ -208,7 +228,7 @@ function StoryAdPanel() {
           type={BUTTON_TYPES.SECONDARY}
           variant={BUTTON_VARIANTS.RECTANGLE}
           size={BUTTON_SIZES.SMALL}
-          onClick={() => setTextAreaVisibility(true)}
+          onClick={exportStoryAd}
         >
           {__('Export', 'web-stories')}
         </Button>
