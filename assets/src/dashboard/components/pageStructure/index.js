@@ -31,6 +31,7 @@ import { useConfig } from '../../app/config';
 import { resolveRoute, useRouteHistory } from '../../app/router';
 import { PRIMARY_PATHS, SECONDARY_PATHS, Z_INDEX } from '../../constants';
 import {
+  addQueryArgs,
   Button,
   BUTTON_SIZES,
   BUTTON_TYPES,
@@ -104,6 +105,10 @@ export const LoadingContainer = styled.div`
   min-height: 550px;
 `;
 
+const TemporaryButtonContainer = styled.div`
+  margin-top: -10px;
+`;
+
 export function LeftRail() {
   const { state } = useRouteHistory();
   const { newStoryURL, version } = useConfig();
@@ -111,6 +116,10 @@ export function LeftRail() {
   const upperContentRef = useRef(null);
 
   const enableInProgressViews = useFeature('enableInProgressViews');
+
+  const createStoryUrl = addQueryArgs(newStoryURL, {
+    story_type: 'ad',
+  });
 
   const {
     state: { sideBarVisible },
@@ -183,6 +192,16 @@ export function LeftRail() {
           >
             {__('Create New Story', 'web-stories')}
           </Button>
+          <TemporaryButtonContainer>
+            <Button
+              type={BUTTON_TYPES.QUATERNARY}
+              size={BUTTON_SIZES.SMALL}
+              href={createStoryUrl}
+              onClick={onCreateNewStoryClick}
+            >
+              {__('Create Story Ad', 'web-stories')}
+            </Button>
+          </TemporaryButtonContainer>
         </Content>
         <Content>
           <NavList>

@@ -14,30 +14,9 @@
  * limitations under the License.
  */
 
-/**
- * Internal dependencies
- */
-import {
-  PublishPanel,
-  ExcerptPanel,
-  SlugPanel,
-  StatusPanel,
-  PageAdvancementPanel,
-  StoryAdPanel,
-} from '../../panels/document';
-import isStoryAd from '../../../utils/isStoryAd';
+export default function isStoryAd() {
+  const url = new URL(window.location.href);
+  const storyType = url.searchParams.get('story_type');
 
-function DocumentInspector() {
-  return (
-    <>
-      <StatusPanel />
-      <PublishPanel />
-      <ExcerptPanel />
-      <SlugPanel />
-      <PageAdvancementPanel />
-      {isStoryAd() ? <StoryAdPanel /> : null}
-    </>
-  );
+  return 'ad' === storyType;
 }
-
-export default DocumentInspector;
