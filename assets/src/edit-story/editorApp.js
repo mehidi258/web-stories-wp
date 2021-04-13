@@ -33,6 +33,7 @@ import { FileProvider } from './app/file';
 import { Media3pApiProvider } from './app/media/media3p/api';
 import { HistoryProvider } from './app/history';
 import { StoryProvider } from './app/story';
+import { StoryAdProvider } from './app/storyAd';
 import { FontProvider } from './app/font';
 import { MediaProvider } from './app/media';
 import { CurrentUserProvider } from './app/currentUser';
@@ -65,30 +66,32 @@ function App({ config }) {
                   <HistoryProvider size={50}>
                     <SnackbarProvider>
                       <MetaBoxesProvider>
-                        <StoryProvider storyId={storyId}>
-                          <CurrentUserProvider>
-                            <PostLock />
-                            <FontProvider>
-                              <MediaProvider>
-                                <AutoSaveHandler />
-                                <TransformProvider>
-                                  <DropTargetsProvider>
-                                    <HelpCenterProvider>
-                                      <GlobalStyle />
-                                      <DevTools />
-                                      <DefaultMoveableGlobalStyle />
-                                      <CropMoveableGlobalStyle />
-                                      <ModalGlobalStyle />
-                                      <CalendarStyle />
-                                      <KeyboardOnlyOutlines />
-                                      <Layout />
-                                    </HelpCenterProvider>
-                                  </DropTargetsProvider>
-                                </TransformProvider>
-                              </MediaProvider>
-                            </FontProvider>
-                          </CurrentUserProvider>
-                        </StoryProvider>
+                        <StoryAdProvider>
+                          <StoryProvider storyId={storyId}>
+                            <CurrentUserProvider>
+                              <PostLock />
+                              <FontProvider>
+                                <MediaProvider>
+                                  <AutoSaveHandler />
+                                  <TransformProvider>
+                                    <DropTargetsProvider>
+                                      <HelpCenterProvider>
+                                        <GlobalStyle />
+                                        <DevTools />
+                                        <DefaultMoveableGlobalStyle />
+                                        <CropMoveableGlobalStyle />
+                                        <ModalGlobalStyle />
+                                        <CalendarStyle />
+                                        <KeyboardOnlyOutlines />
+                                        <Layout />
+                                      </HelpCenterProvider>
+                                    </DropTargetsProvider>
+                                  </TransformProvider>
+                                </MediaProvider>
+                              </FontProvider>
+                            </CurrentUserProvider>
+                          </StoryProvider>
+                        </StoryAdProvider>
                       </MetaBoxesProvider>
                     </SnackbarProvider>
                   </HistoryProvider>

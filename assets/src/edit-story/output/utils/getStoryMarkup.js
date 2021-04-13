@@ -34,9 +34,10 @@ import isStoryAd from '../../utils/isStoryAd';
  * @param {Array<Object>} pages List of pages.
  * @param {Object} metadata Metadata.
  * @param {Object} featureFlags Boolean flags to enable/disable features
+ * @param {Object} storyAd Story Ad.
  * @return {string} Story markup.
  */
-export default function getStoryMarkup(story, pages, metadata, featureFlags) {
+export default function getStoryMarkup(story, pages, metadata, featureFlags, storyAd = {} ) {
   // Note that react-dom/server will warn about useLayoutEffect usage here.
   // Not because of any wrongdoing in our code, but mostly because
   // of its own profiler.
@@ -44,7 +45,7 @@ export default function getStoryMarkup(story, pages, metadata, featureFlags) {
   return renderToStaticMarkup(
     <FlagsProvider features={featureFlags}>
       {isStoryAd() ? (
-        <OutputStoryAd story={story} pages={pages} metadata={metadata} />
+        <OutputStoryAd story={story} pages={pages} metadata={metadata} storyAd={ storyAd } />
       ) : (
         <OutputStory story={story} pages={pages} metadata={metadata} />
       )}

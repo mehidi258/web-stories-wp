@@ -18,7 +18,7 @@
  * External dependencies
  */
 import PropTypes from 'prop-types';
-import { useMemo, useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 /**
  * Internal dependencies
@@ -34,6 +34,7 @@ import useHistoryReplay from './effects/useHistoryReplay';
 import useStoryReducer from './useStoryReducer';
 import useAutoSave from './actions/useAutoSave';
 import useSaveMetaBoxes from './effects/useSaveMetaBoxes';
+import useAdStory from '../storyAd/useAdStory';
 
 function StoryProvider({ storyId, children }) {
   const { isDemo } = useConfig();
@@ -53,6 +54,8 @@ function StoryProvider({ storyId, children }) {
     animationState,
     capabilities,
   } = reducerState;
+
+  const { state: storyAd } = useAdStory();
 
   useEffect(() => setHashPageId(current), [current, setHashPageId]);
 
@@ -133,6 +136,7 @@ function StoryProvider({ storyId, children }) {
     storyId,
     pages,
     story,
+    storyAd,
     updateStory,
   });
 

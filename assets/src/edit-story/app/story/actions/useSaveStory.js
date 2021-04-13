@@ -40,10 +40,11 @@ import { useHistory } from '../../history';
  * @param {number} properties.storyId Story post id.
  * @param {Array} properties.pages Array of all pages.
  * @param {Object} properties.story Story-global properties.
+ * @param {Object} properties.storyAd Story ad.
  * @param {Function} properties.updateStory Function to update a story.
  * @return {Function} Function that can be called to save a story.
  */
-function useSaveStory({ storyId, pages, story, updateStory }) {
+function useSaveStory({ storyId, pages, story, storyAd, updateStory }) {
   const {
     actions: { saveStoryById },
   } = useAPI();
@@ -70,7 +71,7 @@ function useSaveStory({ storyId, pages, story, updateStory }) {
 
       return saveStoryById({
         storyId,
-        ...getStoryPropsToSave({ story, pages, metadata, flags }),
+        ...getStoryPropsToSave({ story, pages, metadata, flags, storyAd }),
         ...props,
       })
         .then((post) => {
@@ -100,6 +101,7 @@ function useSaveStory({ storyId, pages, story, updateStory }) {
     },
     [
       story,
+      storyAd,
       pages,
       flags,
       metadata,

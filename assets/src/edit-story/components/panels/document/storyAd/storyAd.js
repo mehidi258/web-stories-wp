@@ -37,6 +37,7 @@ import {
 } from '../../../../../design-system';
 import { Row } from '../../../form';
 import { useAPI, useStory } from '../../../../app';
+import useAdStory from '../../../../app/storyAd/useAdStory';
 
 const FieldRow = styled(Row)`
   margin-bottom: 12px;
@@ -158,13 +159,17 @@ function StoryAdPanel() {
   const [copyText, setCopyText] = useState('Copy Markup');
   const textAreaRef = useRef();
 
-  const { updateStory, saveStory, story } = useStory(
-    ({ actions: { updateStory, saveStory }, state: { story } }) => ({
-      updateStory,
+  const { saveStory, story } = useStory(
+    ({ actions: { saveStory }, state: { story } }) => ({
       saveStory,
       story,
     })
   );
+
+  const {
+    actions: { updateCTALink, updateCtaText, updateLandingPageType },
+    state: { ctaLink, ctaText, landingPageType },
+  } = useAdStory();
 
   const getContent = async () => {
     await saveStory();
@@ -175,29 +180,13 @@ function StoryAdPanel() {
     }
   };
 
-  const [ctaLink, setCTALink] = useState('');
-  const [selectedCtaText, setSelectedCtaText] = useState(ctaOptions[2].value);
-  const [selectedLandingPageType, setSelectedPageLandingType] = useState(
-    landPageOptions[1].value
-  );
-
-  const updateValues = () => {
-    updateStory({
-      properties: {
-        ctaLink,
-        ctaText: selectedCtaText,
-        landingPageType: selectedLandingPageType,
-      },
-    });
+  const exportStoryAd = async () => {
+    await getContent();
+    await setTextAreaVisibility(true);
   };
 
-  const exportStoryAd = () => {
-    updateValues();
-    getContent();
-    setTextAreaVisibility(true);
-  };
+  const handleChange = (event) => updateCTALink(event.currentTarget.value);
 
-  const handleChange = (event) => setCTALink(event.currentTarget.value);
   const copyMarkup = () => {
     textAreaRef.current.select();
     document.execCommand('copy');
@@ -229,9 +218,9 @@ function StoryAdPanel() {
           dropDownLabel={__('CTA Text', 'web-stories')}
           isKeepMenuOpenOnSelection={false}
           isRTL={false}
-          selectedValue={selectedCtaText}
+          selectedValue={ctaText}
           onMenuItemClick={(event, newValue) => {
-            setSelectedCtaText(newValue);
+            updateCtaText(newValue);
           }}
           placement={PLACEMENT.BOTTOM}
         />
@@ -247,9 +236,9 @@ function StoryAdPanel() {
           dropDownLabel={__('Landing Page Type', 'web-stories')}
           isKeepMenuOpenOnSelection={false}
           isRTL={false}
-          selectedValue={selectedLandingPageType}
+          selectedValue={landingPageType}
           onMenuItemClick={(event, newValue) => {
-            setSelectedPageLandingType(newValue);
+            updateLandingPageType(newValue);
           }}
           placement={PLACEMENT.BOTTOM}
         />

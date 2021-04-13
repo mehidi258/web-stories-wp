@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-export { default as OutputPage } from './page';
-export { default as OutputStory } from './story';
-export { default as OutputElement } from './element';
-export { default as OutputStoryAd } from './storyAd';
-export { default as OutputPageAd } from './pageAd';
+/**
+ * Internal dependencies
+ */
+import { createContext } from '../../../design-system';
+
+export default createContext({ state: {}, actions: {} });

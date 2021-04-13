@@ -27,7 +27,7 @@ import getUsedAmpExtensions from './utils/getUsedAmpExtensions';
 import Boilerplate from './utils/ampBoilerplate';
 import CustomCSS from './utils/styles';
 import getFontDeclarations from './utils/getFontDeclarations';
-import OutputPage from './page';
+import OutputPageAd from './pageAd';
 
 function OutputStoryAd({
   story: {
@@ -39,9 +39,14 @@ function OutputStoryAd({
   },
   pages,
   metadata: { publisher },
+  storyAd,
 }) {
   const ampExtensions = getUsedAmpExtensions(pages);
   const fontDeclarations = getFontDeclarations(pages);
+
+  const { ctaLink, ctaText, landingPageType } = storyAd || {};
+
+  console.log( ctaLink, ctaText, landingPageType  );
 
   return (
     <html amp4ads="" lang="en">
@@ -58,31 +63,28 @@ function OutputStoryAd({
         {fontDeclarations.map((url) => (
           <link key={url} href={url} rel="stylesheet" />
         ))}
+        <style
+          amp4ads-boilerplate=""
+          dangerouslySetInnerHTML={{
+            __html:
+              'body{visibility:hidden}',
+          }} />
         <Boilerplate />
         <CustomCSS />
         {/* Everything between these markers can be replaced server-side. */}
-        <meta name="web-stories-replace-head-start" />
+        <meta name="amp-cta-type" content={ ctaText } />
+        <meta name="amp-cta-url" content={ ctaLink } />
         <title>{title}</title>
-        <link rel="canonical" href={link} />
-        <meta name="web-stories-replace-head-end" />
       </head>
       <body>
-        <amp-story
-          standalone=""
-          publisher={publisher.name}
-          publisher-logo-src={publisher.logo}
-          title={title}
-          poster-portrait-src={featuredMediaUrl}
-        >
-          {pages.map((page) => (
-            <OutputPage
-              key={page.id}
-              page={page}
-              autoAdvance={autoAdvance}
-              defaultPageDuration={defaultPageDuration}
-            />
-          ))}
-        </amp-story>
+      {pages.map((page) => (
+        <OutputPageAd
+          key={page.id}
+          page={page}
+          autoAdvance={autoAdvance}
+          defaultPageDuration={defaultPageDuration}
+        />
+      ))}
       </body>
     </html>
   );
