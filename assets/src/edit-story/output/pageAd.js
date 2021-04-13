@@ -30,8 +30,6 @@ import generatePatternStyles from '../utils/generatePatternStyles';
 import isElementBelowLimit from '../utils/isElementBelowLimit';
 import OutputElement from './element';
 
-const ASPECT_RATIO = `${PAGE_WIDTH}:${PAGE_HEIGHT}`;
-
 function OutputPageAd({ page }) {
   const { id, animations, elements, backgroundColor } = page;
 
@@ -66,11 +64,7 @@ function OutputPageAd({ page }) {
         <StoryAnimation.AMPAnimations />
 
         {backgroundElement && (
-          <amp-story-grid-layer
-            template="vertical"
-            aspect-ratio={ASPECT_RATIO}
-            class="grid-layer"
-          >
+          <div className="grid-layer">
             <div className="page-fullbleed-area" style={backgroundStyles}>
               <div className="page-safe-area">
                 <OutputElement element={backgroundElement} />
@@ -84,14 +78,10 @@ function OutputPageAd({ page }) {
                 )}
               </div>
             </div>
-          </amp-story-grid-layer>
+          </div>
         )}
 
-        <amp-story-grid-layer
-          template="vertical"
-          aspect-ratio={ASPECT_RATIO}
-          class="grid-layer"
-        >
+        <div className="grid-layer">
           <div className="page-fullbleed-area">
             <div className="page-safe-area">
               {validElements.map((element) => (
@@ -99,17 +89,8 @@ function OutputPageAd({ page }) {
               ))}
             </div>
           </div>
-        </amp-story-grid-layer>
+        </div>
       </StoryAnimation.Provider>
-      {hasPageAttachment && (
-        <amp-story-page-attachment
-          layout="nodisplay"
-          href={page.pageAttachment.url}
-          data-cta-text={
-            page.pageAttachment.ctaText || __('Learn more', 'web-stories')
-          }
-        />
-      )}
     </div>
   );
 }

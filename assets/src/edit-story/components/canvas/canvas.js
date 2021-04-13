@@ -20,7 +20,9 @@
 import CanvasLayout from './canvasLayout';
 
 function Canvas() {
-  return <CanvasLayout />;
+  return (
+    <CanvasLayout />
+  );
 }
 
 export default Canvas;

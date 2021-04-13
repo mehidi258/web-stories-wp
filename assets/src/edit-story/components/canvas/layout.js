@@ -392,6 +392,7 @@ const PageArea = forwardRef(function PageArea(
             background={background}
             isControlled={isControlled}
             isBackgroundSelected={isBackgroundSelected}
+            className="full-bleed-container"
           >
             <PageAreaWithoutOverflow showOverflow={showOverflow}>
               <PageAreaSafeZone ref={ref} data-testid="safezone">

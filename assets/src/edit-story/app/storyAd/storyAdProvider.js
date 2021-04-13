@@ -6,17 +6,20 @@ function StoryAdProvider( {children} ) {
   const [ ctaLink, updateCTALink ] = useState( '' );
   const [ ctaText, updateCtaText ] = useState( 'ORDER_NOW' );
   const [ landingPageType, updateLandingPageType ] = useState( 'AMP' );
+  const [ screenshot, updateScreenshot ] = useState( '' );
 
   const value = {
     actions: {
       updateCTALink,
       updateCtaText,
       updateLandingPageType,
+      updateScreenshot,
     },
     state: {
       ctaLink,
       ctaText,
       landingPageType,
+      screenshot,
     }
   };
 

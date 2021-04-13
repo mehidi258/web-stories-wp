@@ -23,7 +23,7 @@ import styled from 'styled-components';
  * Internal dependencies
  */
 import { __ } from '@web-stories-wp/i18n';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SimplePanel } from '../../panel';
 import {
   Button,
@@ -167,25 +167,48 @@ function StoryAdPanel() {
   );
 
   const {
-    actions: { updateCTALink, updateCtaText, updateLandingPageType },
-    state: { ctaLink, ctaText, landingPageType },
+    actions: { updateCTALink, updateCtaText, updateLandingPageType, updateScreenshot },
+    state: { ctaLink, ctaText, landingPageType, screenshot },
   } = useAdStory();
 
-  const getContent = async () => {
+  const capture = async () => {
+    if ( undefined !== typeof takeScreenshot ) {
+      const resp = await takeScreenshot();
+      await updateScreenshot( resp?.data?.image_url );
+    }
+  };
+
+  const saveAndFetchContent = async () => {
     await saveStory();
 
     if (story && story.storyId) {
       const post = await getStoryById(story.storyId);
       await setContent(post.content.raw);
     }
-  };
+  }
+
+  useEffect( () => {
+   if ( screenshot ) {
+     saveAndFetchContent();
+   }
+  }, [ screenshot ] );
+
+  useEffect( () => {
+    setCopyText( 'Copy Markup' );
+  }, [ screenshot, ctaText, ctaLink, landingPageType ] )
 
   const exportStoryAd = async () => {
-    await getContent();
+    await capture();
     await setTextAreaVisibility(true);
   };
 
-  const handleChange = (event) => updateCTALink(event.currentTarget.value);
+  const handleCTALinkChange = (event) => {
+    let link = event.currentTarget.value;
+
+    link = (link.indexOf('://') === -1) ? 'https://' + link : link;
+
+    updateCTALink( link );
+  };
 
   const copyMarkup = () => {
     textAreaRef.current.select();
@@ -202,7 +225,7 @@ function StoryAdPanel() {
       <FieldRow>
         <Input
           value={ctaLink}
-          onChange={handleChange}
+          onChange={handleCTALinkChange}
           placeholder={__('Enter CTA Link', 'web-stories')}
           aria-label={__('CTA Link', 'web-stories')}
         />

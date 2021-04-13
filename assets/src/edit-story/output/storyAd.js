@@ -23,69 +23,65 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import StoryPropTypes from '../types';
-import getUsedAmpExtensions from './utils/getUsedAmpExtensions';
-import Boilerplate from './utils/ampBoilerplate';
-import CustomCSS from './utils/styles';
-import getFontDeclarations from './utils/getFontDeclarations';
-import OutputPageAd from './pageAd';
 
 function OutputStoryAd({
   story: {
     featuredMedia: { url: featuredMediaUrl },
-    link,
-    title,
-    autoAdvance,
-    defaultPageDuration,
   },
-  pages,
   metadata: { publisher },
   storyAd,
 }) {
-  const ampExtensions = getUsedAmpExtensions(pages);
-  const fontDeclarations = getFontDeclarations(pages);
 
-  const { ctaLink, ctaText, landingPageType } = storyAd || {};
+  const { ctaLink, ctaText, landingPageType, screenshot } = storyAd || {};
 
-  console.log( ctaLink, ctaText, landingPageType  );
+  console.log( ctaLink, ctaText, landingPageType, screenshot );
 
   return (
     <html amp4ads="" lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width,minimum-scale=1,initial-scale=1"
-        />
-        <script async src="https://cdn.ampproject.org/amp4ads-v0.js" />
-        {ampExtensions.map(({ name, src }) => (
-          <script key={src} async="async" src={src} custom-element={name} />
-        ))}
-        {fontDeclarations.map((url) => (
-          <link key={url} href={url} rel="stylesheet" />
-        ))}
+    <head>
+      <meta charSet="utf-8"/>
+      <meta name="viewport" content="width=device-width" />
+      <script async src="https://cdn.ampproject.org/amp4ads-v0.js" />
+      <style
+        amp4ads-boilerplate=""
+        dangerouslySetInnerHTML={ {
+          __html: `body { visibility: hidden }`
+        } }
+      />
+      <noscript>
         <style
-          amp4ads-boilerplate=""
-          dangerouslySetInnerHTML={{
-            __html:
-              'body{visibility:hidden}',
-          }} />
-        <Boilerplate />
-        <CustomCSS />
-        {/* Everything between these markers can be replaced server-side. */}
-        <meta name="amp-cta-type" content={ ctaText } />
-        <meta name="amp-cta-url" content={ ctaLink } />
-        <title>{title}</title>
-      </head>
-      <body>
-      {pages.map((page) => (
-        <OutputPageAd
-          key={page.id}
-          page={page}
-          autoAdvance={autoAdvance}
-          defaultPageDuration={defaultPageDuration}
+          amp-boilerplate=""
+          dangerouslySetInnerHTML={ {
+            __html: `
+            body {
+              -webkit - animation: none;
+              -moz-animation: none;
+              -ms-animation: none;
+              animation: none
+            }`
+          } }
         />
-      ))}
-      </body>
+      </noscript>
+      <meta name="amp-cta-type" content={ ctaText }/>
+      <meta name="amp-cta-url" content={ ctaLink }  />
+      <meta name="amp-cta-landing-page-type" content={ landingPageType } />
+      <style
+        amp-custom
+        dangerouslySetInnerHTML={ {
+          __html: `
+            .container {
+              background: url( ${ screenshot } );
+              width: 100%;
+              height: 100%;
+              background-size: cover;
+              background-repeat: no-repeat;
+            }`
+        } }
+      />
+    </head>
+    <body>
+      <div className="container" />
+    </body>
     </html>
   );
 }
