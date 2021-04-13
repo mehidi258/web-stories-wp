@@ -24,6 +24,8 @@ import { FlagsProvider } from 'flagged';
  * Internal dependencies
  */
 import OutputStory from '../story';
+import OutputStoryAd from '../storyAd';
+import isStoryAd from '../../utils/isStoryAd';
 
 /**
  * Creates AMP HTML markup for saving to DB for rendering in the FE.
@@ -41,7 +43,11 @@ export default function getStoryMarkup(story, pages, metadata, featureFlags) {
   // See https://github.com/facebook/react/issues/14927
   return renderToStaticMarkup(
     <FlagsProvider features={featureFlags}>
-      <OutputStory story={story} pages={pages} metadata={metadata} />
+      {isStoryAd() ? (
+        <OutputStoryAd story={story} pages={pages} metadata={metadata} />
+      ) : (
+        <OutputStory story={story} pages={pages} metadata={metadata} />
+      )}
     </FlagsProvider>
   );
 }

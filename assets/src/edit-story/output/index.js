@@ -16,4 +16,5 @@
 
 export { default as OutputPage } from './page';
 export { default as OutputStory } from './story';
+export { default as OutputStoryAd } from './storyAd';
 export { default as OutputElement } from './element';

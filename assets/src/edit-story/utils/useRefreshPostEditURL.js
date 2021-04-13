@@ -23,6 +23,7 @@ import { useCallback } from 'react';
  * Internal dependencies
  */
 import { addQueryArgs } from '../../design-system';
+import isStoryAd from './isStoryAd';
 
 /**
  * Update page URL in browser.
@@ -32,10 +33,17 @@ import { addQueryArgs } from '../../design-system';
  */
 function useRefreshPostEditURL(postId) {
   const refreshPostEditURL = useCallback(() => {
-    const getPostEditURL = addQueryArgs('post.php', {
+    const args = {
       post: postId,
       action: 'edit',
-    });
+    };
+
+    if (isStoryAd()) {
+      args.story_type = 'ad';
+    }
+
+    const getPostEditURL = addQueryArgs('post.php', args);
+
     window.history.replaceState(
       { id: postId },
       'Post ' + postId,
