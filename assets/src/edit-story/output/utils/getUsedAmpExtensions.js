@@ -23,6 +23,11 @@
  */
 
 /**
+ * Internal dependencies
+ */
+import isStoryAd from '../../utils/isStoryAd';
+
+/**
  * Goes through all pages in a story to find the needed AMP extensions for them.
  *
  * Always includes the runtime as well as the amp-story extension.
@@ -32,13 +37,18 @@
  */
 const getUsedAmpExtensions = (pages) => {
   const extensions = [
-    // runtime.
-    { src: 'https://cdn.ampproject.org/v0.js' },
     {
       name: 'amp-story',
       src: 'https://cdn.ampproject.org/v0/amp-story-1.0.js',
     },
   ];
+
+  if (!isStoryAd()) {
+    extensions.unshift({
+      // runtime
+      src: 'https://cdn.ampproject.org/v0.js',
+    });
+  }
 
   const ampVideo = {
     name: 'amp-video',

@@ -44,13 +44,14 @@ function OutputStoryAd({
   const fontDeclarations = getFontDeclarations(pages);
 
   return (
-    <html amp="" lang="en">
+    <html amp4ads="" lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta
           name="viewport"
           content="width=device-width,minimum-scale=1,initial-scale=1"
         />
+        <script async src="https://cdn.ampproject.org/amp4ads-v0.js" />
         {ampExtensions.map(({ name, src }) => (
           <script key={src} async="async" src={src} custom-element={name} />
         ))}

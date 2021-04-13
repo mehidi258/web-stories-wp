@@ -23,7 +23,7 @@ import styled from 'styled-components';
  * Internal dependencies
  */
 import { __ } from '@web-stories-wp/i18n';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { SimplePanel } from '../../panel';
 import {
   Button,
@@ -36,10 +36,15 @@ import {
   TextArea,
 } from '../../../../../design-system';
 import { Row } from '../../../form';
-import { useStory } from '../../../../app';
+import { useAPI, useStory } from '../../../../app';
 
 const FieldRow = styled(Row)`
   margin-bottom: 12px;
+`;
+
+const FieldRowButton = styled(Row)`
+  margin-bottom: 12px;
+  justify-content: flex-end;
 `;
 
 const ctaOptions = [
@@ -145,16 +150,36 @@ const landPageOptions = [
 ];
 
 function StoryAdPanel() {
-  const { updateStory } = useStory(({ actions: { updateStory } }) => ({
-    updateStory,
-  }));
+  const {
+    actions: { getStoryById },
+  } = useAPI();
+  const [showTextArea, setTextAreaVisibility] = useState(false);
+  const [content, setContent] = useState('');
+  const [copyText, setCopyText] = useState('Copy Markup');
+  const textAreaRef = useRef();
+
+  const { updateStory, saveStory, story } = useStory(
+    ({ actions: { updateStory, saveStory }, state: { story } }) => ({
+      updateStory,
+      saveStory,
+      story,
+    })
+  );
+
+  const getContent = async () => {
+    await saveStory();
+
+    if (story && story.storyId) {
+      const post = await getStoryById(story.storyId);
+      await setContent(post.content.raw);
+    }
+  };
 
   const [ctaLink, setCTALink] = useState('');
   const [selectedCtaText, setSelectedCtaText] = useState(ctaOptions[2].value);
   const [selectedLandingPageType, setSelectedPageLandingType] = useState(
     landPageOptions[1].value
   );
-  const [showTextArea, setTextAreaVisibility] = useState(false);
 
   const updateValues = () => {
     updateStory({
@@ -167,11 +192,17 @@ function StoryAdPanel() {
   };
 
   const exportStoryAd = () => {
-    setTextAreaVisibility(true);
     updateValues();
+    getContent();
+    setTextAreaVisibility(true);
   };
 
   const handleChange = (event) => setCTALink(event.currentTarget.value);
+  const copyMarkup = () => {
+    textAreaRef.current.select();
+    document.execCommand('copy');
+    setCopyText('Copied');
+  };
 
   return (
     <SimplePanel
@@ -234,9 +265,26 @@ function StoryAdPanel() {
         </Button>
       </FieldRow>
       {showTextArea ? (
-        <FieldRow>
-          <TextArea hint={__('Copy Ad Markup', 'web-stories')} />
-        </FieldRow>
+        <>
+          <FieldRow>
+            <TextArea
+              onChange={() => {}}
+              value={content}
+              ref={textAreaRef}
+              aria-label={__('Ad Markup', 'web-stories')}
+            />
+          </FieldRow>
+          <FieldRowButton>
+            <Button
+              type={BUTTON_TYPES.SECONDARY}
+              variant={BUTTON_VARIANTS.RECTANGLE}
+              size={BUTTON_SIZES.SMALL}
+              onClick={copyMarkup}
+            >
+              {copyText}
+            </Button>
+          </FieldRowButton>
+        </>
       ) : null}
     </SimplePanel>
   );
