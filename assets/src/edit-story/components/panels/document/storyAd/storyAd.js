@@ -172,6 +172,8 @@ function StoryAdPanel() {
   } = useAdStory();
 
   const capture = async () => {
+    setContent( '' );
+
     if ( undefined !== typeof takeScreenshot ) {
       const resp = await takeScreenshot();
       await updateScreenshot( resp?.data?.image_url );
@@ -183,7 +185,7 @@ function StoryAdPanel() {
 
     if (story && story.storyId) {
       const post = await getStoryById(story.storyId);
-      await setContent(post.content.raw);
+      await setContent( `<!doctype html>${ post.content.raw }`);
     }
   }
 

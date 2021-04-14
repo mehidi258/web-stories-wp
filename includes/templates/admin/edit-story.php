@@ -86,7 +86,11 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 <script type='text/javascript'>
   function takeScreenshot() {
     return new Promise( ( resolve ) => {
-      html2canvas( document.querySelector( '.full-bleed-container' ), { scale: 1.5 } ).then( ( canvas ) => {
+      html2canvas( document.querySelector( '.full-bleed-container' ), {
+        scale: 2,
+        letterRendering: 1,
+        allowTaint : true,
+      } ).then( ( canvas ) => {
         const base24 = canvas.toDataURL();
         const data = {
           'action': 'upload_story_ad_image',

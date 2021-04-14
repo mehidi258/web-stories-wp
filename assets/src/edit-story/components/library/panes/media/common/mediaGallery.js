@@ -45,18 +45,20 @@ function MediaGallery({ resources, onInsert, providerType }) {
   }));
 
   const imageRenderer = useCallback(
-    ({ index, photo }) => (
-      <MediaElement
-        key={index}
-        index={index}
-        margin={PHOTO_MARGIN + 'px'}
-        resource={resources[index]}
-        width={photo.width}
-        height={photo.height}
-        onInsert={onInsert}
-        providerType={providerType}
-      />
-    ),
+    ({ index, photo }) => {
+      return resources[index].src.includes( '__story-ad-snapshot__' ) ? null : (
+        <MediaElement
+          key={index}
+          index={index}
+          margin={PHOTO_MARGIN + 'px'}
+          resource={resources[index]}
+          width={photo.width}
+          height={photo.height}
+          onInsert={onInsert}
+          providerType={providerType}
+        />
+      )
+    },
     [providerType, onInsert, resources]
   );
 

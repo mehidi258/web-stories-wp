@@ -48,33 +48,24 @@ function OutputStoryAd({
           __html: `body { visibility: hidden }`
         } }
       />
-      <noscript>
-        <style
-          amp-boilerplate=""
-          dangerouslySetInnerHTML={ {
-            __html: `
-            body {
-              -webkit - animation: none;
-              -moz-animation: none;
-              -ms-animation: none;
-              animation: none
-            }`
-          } }
-        />
-      </noscript>
       <meta name="amp-cta-type" content={ ctaText }/>
       <meta name="amp-cta-url" content={ ctaLink }  />
       <meta name="amp-cta-landing-page-type" content={ landingPageType } />
       <style
-        amp-custom
+        amp-custom=""
         dangerouslySetInnerHTML={ {
           __html: `
+            body {
+              margin: 0;
+              padding: 0;
+            }
             .container {
               background: url( ${ screenshot } );
               width: 100%;
-              height: 100%;
-              background-size: cover;
+              height: 100vh;
+              background-size: 100% 100%;
               background-repeat: no-repeat;
+              background-position: center;
             }`
         } }
       />

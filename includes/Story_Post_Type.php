@@ -869,7 +869,7 @@ class Story_Post_Type extends Service_Base implements Activateable, Deactivateab
 			wp_send_json_error();
 		}
 
-		$image_url = $this->save_image( $base64_img, 'story-ad' . $post_id );
+		$image_url = $this->save_image( $base64_img, '__story-ad-snapshot__' . $post_id );
 
 		wp_send_json_success( [
 			'image_url' => $image_url,
