@@ -19,6 +19,8 @@
  */
 import { FULLBLEED_RATIO, PAGE_RATIO } from '../../constants';
 import theme from '../../theme';
+import isStoryAd from '../../utils/isStoryAd';
+import { PAGE_HEIGHT, PAGE_WIDTH } from '../../constants';
 
 function isHexColorString(s) {
   return /^#(?:[a-f0-9]{3}){1,2}$/i.test(s);
@@ -45,6 +47,30 @@ function CustomStyles() {
   const pageBackgroundColor = isHexColorString(workspaceColor)
     ? workspaceColor
     : '#1B1D1C';
+
+  const storyAdStyle = isStoryAd() ? `
+    .grid-layer-main {
+      margin: auto;
+      width: ${ PAGE_WIDTH }px;
+      height: ${ PAGE_HEIGHT }px;
+      font-size: calc(${ PAGE_HEIGHT }px/10);
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+    }
+    body,html {
+      overflow: hidden ;
+      font-size: calc(var(--story-page-vh, 8px)*2.5);
+      height: 100%;
+      margin: 0;
+    }
+    .page-wrapper {
+      height: 100%;
+    }
+  `: '';
 
   return (
     <style
@@ -102,6 +128,7 @@ function CustomStyles() {
                 bottom: 0;
                 margin: 0;
               }
+              ${ storyAdStyle }
               `,
       }}
     />

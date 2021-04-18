@@ -183,7 +183,7 @@ function StoryAdPanel() {
   const saveAndFetchContent = async () => {
     await saveStory();
 
-    if (story && story.storyId) {
+    if (story && story.storyId ) {
       const post = await getStoryById(story.storyId);
       await setContent( `<!doctype html>${ post.content.raw }`);
     }

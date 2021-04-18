@@ -23,61 +23,77 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import StoryPropTypes from '../types';
+import Boilerplate from './utils/ampBoilerplate';
+import CustomCSS from './utils/styles';
+import getFontDeclarations from './utils/getFontDeclarations';
+import OutputPageAd from './pageAd';
 
-function OutputStoryAd({
-  story: {
-    featuredMedia: { url: featuredMediaUrl },
-  },
-  metadata: { publisher },
-  storyAd,
-}) {
+function OutputStory({
+   story: {
+     featuredMedia: { url: featuredMediaUrl },
+     link,
+     title,
+     autoAdvance,
+     defaultPageDuration,
+   },
+   pages,
+   metadata: { publisher },
+   storyAd
+ }) {
+  const fontDeclarations = getFontDeclarations(pages);
 
   const { ctaLink, ctaText, landingPageType, screenshot } = storyAd || {};
-
-  console.log( ctaLink, ctaText, landingPageType, screenshot );
 
   return (
     <html amp4ads="" lang="en">
     <head>
-      <meta charSet="utf-8"/>
-      <meta name="viewport" content="width=device-width" />
+      <meta charSet="utf-8" />
+      <meta
+        name="viewport"
+        content="width=device-width,minimum-scale=1,initial-scale=1"
+      />
       <script async src="https://cdn.ampproject.org/amp4ads-v0.js" />
+      {fontDeclarations.map((url) => (
+        <link key={url} href={url} rel="stylesheet" />
+      ))}
       <style
         amp4ads-boilerplate=""
-        dangerouslySetInnerHTML={ {
-          __html: `body { visibility: hidden }`
-        } }
+        dangerouslySetInnerHTML={{
+          __html:
+            'body{visibility:hidden}',
+        }}
       />
-      <meta name="amp-cta-type" content={ ctaText }/>
-      <meta name="amp-cta-url" content={ ctaLink }  />
+      <CustomCSS />
+
+      <meta name="amp-cta-url" content={ ctaLink } />
+      <meta name="amp-cta-type" content={ ctaText } />
       <meta name="amp-cta-landing-page-type" content={ landingPageType } />
-      <style
-        amp-custom=""
-        dangerouslySetInnerHTML={ {
-          __html: `
-            body {
-              margin: 0;
-              padding: 0;
-            }
-            .container {
-              background: url( ${ screenshot } );
-              width: 100%;
-              height: 100vh;
-              background-size: 100% 100%;
-              background-repeat: no-repeat;
-              background-position: center;
-            }`
-        } }
-      />
+
     </head>
     <body>
-      <div className="container" />
+      <div
+        data-standalone=""
+        data-publisher={publisher.name}
+        data-publisher-logo-src={publisher.logo}
+        title={title}
+        data-poster-portrait-src={featuredMediaUrl}
+        className="page-wrapper"
+      >
+        {pages.map((page) => (
+          <OutputPageAd
+            key={page.id}
+            page={page}
+            autoAdvance={autoAdvance}
+            defaultPageDuration={defaultPageDuration}
+          />
+        ))}
+      </div>
     </body>
     </html>
   );
 }
 
-OutputStoryAd.propTypes = {
+OutputStory.propTypes = {
   story: StoryPropTypes.story.isRequired,
   pages: PropTypes.arrayOf(StoryPropTypes.page).isRequired,
   metadata: PropTypes.shape({
@@ -88,4 +104,4 @@ OutputStoryAd.propTypes = {
   }).isRequired,
 };
 
-export default OutputStoryAd;
+export default OutputStory;

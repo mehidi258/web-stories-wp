@@ -18,33 +18,48 @@
  * External dependencies
  */
 import PropTypes from 'prop-types';
-import { __ } from '@web-stories-wp/i18n';
 
 /**
  * Internal dependencies
  */
-import { StoryAnimation } from '../../animation';
+import { getTotalDuration, StoryAnimation } from '../../animation';
 import { PAGE_HEIGHT, PAGE_WIDTH } from '../constants';
 import StoryPropTypes from '../types';
 import generatePatternStyles from '../utils/generatePatternStyles';
 import isElementBelowLimit from '../utils/isElementBelowLimit';
 import OutputElement from './element';
+import getLongestMediaElement from './utils/getLongestMediaElement';
 
-function OutputPageAd({ page }) {
+const ASPECT_RATIO = `${PAGE_WIDTH}:${PAGE_HEIGHT}`;
+
+function OutputPage({ page, autoAdvance, defaultPageDuration }) {
   const { id, animations, elements, backgroundColor } = page;
 
   const [backgroundElement, ...regularElements] = elements;
+  const animationDuration = getTotalDuration({ animations }) / 1000;
+  const nonMediaPageDuration = Math.max(
+    animationDuration || 0,
+    defaultPageDuration
+  );
+  const longestMediaElement = getLongestMediaElement(
+    elements,
+    nonMediaPageDuration
+  );
 
   // If the background element has base color set, it's media, use that.
   const baseColor = backgroundElement?.resource?.baseColor;
   const backgroundStyles = baseColor
     ? {
-        backgroundColor: `rgb(${baseColor[0]},${baseColor[1]},${baseColor[2]})`,
-      }
+      backgroundColor: `rgb(${baseColor[0]},${baseColor[1]},${baseColor[2]})`,
+    }
     : {
-        backgroundColor: 'white',
-        ...generatePatternStyles(backgroundColor),
-      };
+      backgroundColor: 'white',
+      ...generatePatternStyles(backgroundColor),
+    };
+
+  const autoAdvanceAfter = longestMediaElement?.id
+    ? `el-${longestMediaElement?.id}-media`
+    : `${nonMediaPageDuration}s`;
 
   const hasPageAttachment = page.pageAttachment?.url?.length > 0;
 
@@ -53,18 +68,26 @@ function OutputPageAd({ page }) {
     !hasPageAttachment || !isElementBelowLimit(element)
       ? element
       : {
-          ...element,
-          link: null,
-        }
+        ...element,
+        link: null,
+      }
   );
 
   return (
-    <div id={id}>
+    <div
+      id={id}
+      className="page-wrapper"
+      data-auto-advance-after={autoAdvance ? autoAdvanceAfter : undefined}
+    >
       <StoryAnimation.Provider animations={animations} elements={elements}>
         <StoryAnimation.AMPAnimations />
 
         {backgroundElement && (
-          <div className="grid-layer">
+          <div
+            data-template="vertical"
+            data-aspect-ratio={ASPECT_RATIO}
+            className="grid-layer"
+          >
             <div className="page-fullbleed-area" style={backgroundStyles}>
               <div className="page-safe-area">
                 <OutputElement element={backgroundElement} />
@@ -81,7 +104,11 @@ function OutputPageAd({ page }) {
           </div>
         )}
 
-        <div className="grid-layer">
+        <div
+          data-template="vertical"
+          data-aspect-ratio={ASPECT_RATIO}
+          className="grid-layer grid-layer-main"
+        >
           <div className="page-fullbleed-area">
             <div className="page-safe-area">
               {validElements.map((element) => (
@@ -95,13 +122,15 @@ function OutputPageAd({ page }) {
   );
 }
 
-OutputPageAd.propTypes = {
+OutputPage.propTypes = {
   page: StoryPropTypes.page.isRequired,
+  autoAdvance: PropTypes.bool,
+  defaultPageDuration: PropTypes.number,
 };
 
-OutputPageAd.defaultProps = {
+OutputPage.defaultProps = {
   autoAdvance: true,
   defaultPageDuration: 7,
 };
 
-export default OutputPageAd;
+export default OutputPage;

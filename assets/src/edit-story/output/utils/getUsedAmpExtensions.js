@@ -36,19 +36,16 @@ import isStoryAd from '../../utils/isStoryAd';
  * @return {Array<Extension>} List of used AMP extensions.
  */
 const getUsedAmpExtensions = (pages) => {
-  const extensions = [
+  let extensions = [
+    {
+      // runtime
+      src: 'https://cdn.ampproject.org/v0.js',
+    },
     {
       name: 'amp-story',
       src: 'https://cdn.ampproject.org/v0/amp-story-1.0.js',
     },
   ];
-
-  if (!isStoryAd()) {
-    extensions.unshift({
-      // runtime
-      src: 'https://cdn.ampproject.org/v0.js',
-    });
-  }
 
   const ampVideo = {
     name: 'amp-video',
