@@ -23,26 +23,21 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import StoryPropTypes from '../types';
-import Boilerplate from './utils/ampBoilerplate';
 import CustomCSS from './utils/styles';
 import getFontDeclarations from './utils/getFontDeclarations';
 import OutputPageAd from './pageAd';
 
 function OutputStory({
    story: {
-     featuredMedia: { url: featuredMediaUrl },
-     link,
-     title,
      autoAdvance,
      defaultPageDuration,
    },
    pages,
-   metadata: { publisher },
    storyAd
  }) {
   const fontDeclarations = getFontDeclarations(pages);
 
-  const { ctaLink, ctaText, landingPageType, screenshot } = storyAd || {};
+  const { ctaLink, ctaText, landingPageType } = storyAd || {};
 
   return (
     <html amp4ads="" lang="en">

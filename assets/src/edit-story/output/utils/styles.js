@@ -54,12 +54,8 @@ function CustomStyles() {
       width: ${ PAGE_WIDTH }px;
       height: ${ PAGE_HEIGHT }px;
       font-size: calc(${ PAGE_HEIGHT }px/10);
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      top: 0;
       pointer-events: none;
+      position: relative;
     }
     body,html {
       overflow: hidden ;
@@ -69,6 +65,8 @@ function CustomStyles() {
     }
     .page-wrapper {
       height: 100%;
+      display: flex;
+      justify-content: center;
     }
   `: '';
 
