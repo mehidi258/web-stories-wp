@@ -83,27 +83,6 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 // TODO: Use custom version of the_block_editor_meta_boxes() without the block editor specifics?
 ?>
 
-<script type='text/javascript'>
-  function takeScreenshot() {
-    return new Promise( ( resolve ) => {
-      html2canvas( document.querySelector( '.full-bleed-container' ), {
-        scale: 2,
-        letterRendering: 1,
-        allowTaint : true,
-      } ).then( ( canvas ) => {
-        const base24 = canvas.toDataURL();
-        const data = {
-          'action': 'upload_story_ad_image',
-          'base24': base24,
-          'post_id': <?php echo filter_input( INPUT_GET, 'post', FILTER_SANITIZE_NUMBER_INT ); ?>
-        };
-
-        jQuery.post( ajaxurl, data, resolve );
-      } );
-    } );
-  }
-</script>
-
 <div class="web-stories-wp">
 	<h1 class="screen-reader-text hide-if-no-js"><?php esc_html_e( 'Web Stories', 'web-stories' ); ?></h1>
 	<div id="web-stories-editor" class="web-stories-editor-app-container hide-if-no-js">

@@ -227,8 +227,6 @@ class Story_Post_Type extends Service_Base implements Activateable, Deactivateab
 
 		add_filter( 'bulk_post_updated_messages', [ $this, 'bulk_post_updated_messages' ], 10, 2 );
 		add_filter( 'site_option_upload_filetypes', [ $this, 'filter_list_of_allowed_filetypes' ] );
-
-		add_action( 'wp_ajax_upload_story_ad_image', [ $this, 'upload_story_ad_image' ] );
 	}
 
 	/**
@@ -507,8 +505,6 @@ class Story_Post_Type extends Service_Base implements Activateable, Deactivateab
 		if ( $this->experiments->is_experiment_enabled( 'customMetaBoxes' ) ) {
 			$script_dependencies[] = 'postbox';
 		}
-
-		wp_enqueue_script( 'test-handle', 'https://html2canvas.hertzen.com/dist/html2canvas.min.js', [ 'jquery' ] );
 
 		$this->enqueue_script( self::WEB_STORIES_SCRIPT_HANDLE, $script_dependencies );
 		$this->enqueue_style( self::WEB_STORIES_SCRIPT_HANDLE, [ 'google-fonts' ] );
@@ -862,49 +858,5 @@ class Story_Post_Type extends Service_Base implements Activateable, Deactivateab
 		}
 
 		return $value;
-	}
-
-	public function upload_story_ad_image() {
-		$base64_img = $_POST['base24'];
-		$post_id = $_POST['post_id'];
-
-		if ( ! current_user_can( 'edit_post', $post_id) ) {
-			wp_send_json_error();
-		}
-
-		$image_url = $this->save_image( $base64_img, '__story-ad-snapshot__' . $post_id );
-
-		wp_send_json_success( [
-			'image_url' => $image_url,
-		] );
-	}
-
-	public function save_image( $base64_img, $title ) {
-
-		// Upload dir.
-		$upload_dir  = wp_upload_dir();
-		$upload_path = str_replace( '/', DIRECTORY_SEPARATOR, $upload_dir['path'] ) . DIRECTORY_SEPARATOR;
-
-		$img             = str_replace( 'data:image/png;base64,', '', $base64_img );
-		$img             = str_replace( ' ', '+', $img );
-		$decoded         = base64_decode( $img );
-		$filename        = $title . '.jpeg';
-		$file_type       = 'image/jpeg';
-		$hashed_filename = md5( $filename . microtime() ) . '_' . $filename;
-
-		// Save the image in the uploads directory.
-		$upload_file = file_put_contents( $upload_path . $hashed_filename, $decoded );
-
-		$attachment = array(
-			'post_mime_type' => $file_type,
-			'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $hashed_filename ) ),
-			'post_content'   => '',
-			'post_status'    => 'inherit',
-			'guid'           => $upload_dir['url'] . '/' . basename( $hashed_filename )
-		);
-
-		$attach_id = wp_insert_attachment( $attachment, $upload_dir['path'] . '/' . $hashed_filename );
-
-		return wp_get_attachment_image_url( $attach_id, 'full' );
 	}
 }
