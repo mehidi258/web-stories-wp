@@ -20,6 +20,7 @@
 import StoryPropTypes from '../../types';
 import MediaOutput from '../media/output';
 import { calculateSrcSet } from '../media/util';
+import isStoryAd from '../../utils/isStoryAd';
 
 /**
  * Returns AMP HTML for saving into post content for displaying in the FE.
@@ -37,7 +38,7 @@ function ImageOutput({ element, box }) {
   };
 
   const srcSet = calculateSrcSet(element.resource);
-  if (srcSet) {
+  if (srcSet && ! isStoryAd()) {
     props.srcSet = srcSet;
   }
 

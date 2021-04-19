@@ -83,11 +83,7 @@ function OutputPage({ page, autoAdvance, defaultPageDuration }) {
         <StoryAnimation.AMPAnimations />
 
         {backgroundElement && (
-          <div
-            data-template="vertical"
-            data-aspect-ratio={ASPECT_RATIO}
-            className="grid-layer"
-          >
+          <div className="grid-layer">
             <div className="page-fullbleed-area" style={backgroundStyles}>
               <div className="page-safe-area">
                 <OutputElement element={backgroundElement} />
@@ -104,11 +100,7 @@ function OutputPage({ page, autoAdvance, defaultPageDuration }) {
           </div>
         )}
 
-        <div
-          data-template="vertical"
-          data-aspect-ratio={ASPECT_RATIO}
-          className="grid-layer grid-layer-main"
-        >
+        <div className="grid-layer grid-layer-main">
           <div className="page-fullbleed-area">
             <div className="page-safe-area">
               {validElements.map((element) => (

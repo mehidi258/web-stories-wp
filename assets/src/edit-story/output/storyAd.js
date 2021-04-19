@@ -71,14 +71,6 @@ function OutputStory({
 
     </head>
     <body>
-      <div
-        data-standalone=""
-        data-publisher={publisher.name}
-        data-publisher-logo-src={publisher.logo}
-        title={title}
-        data-poster-portrait-src={featuredMediaUrl}
-        className="page-wrapper"
-      >
         {pages.map((page) => (
           <OutputPageAd
             key={page.id}
@@ -87,7 +79,6 @@ function OutputStory({
             defaultPageDuration={defaultPageDuration}
           />
         ))}
-      </div>
     </body>
     </html>
   );

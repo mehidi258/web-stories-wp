@@ -18,6 +18,8 @@
  * External dependencies
  */
 import styled from 'styled-components';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 /**
  * Internal dependencies
@@ -168,39 +170,63 @@ function StoryAdPanel() {
 
   const {
     actions: { updateCTALink, updateCtaText, updateLandingPageType, updateScreenshot },
-    state: { ctaLink, ctaText, landingPageType, screenshot },
+    state: { ctaLink, ctaText, landingPageType },
   } = useAdStory();
 
-  const capture = async () => {
-    setContent( '' );
+  const zipStoryAd = async ( post ) => {
+    console.log( post );
 
-    if ( undefined !== typeof takeScreenshot ) {
-      const resp = await takeScreenshot();
-      await updateScreenshot( resp?.data?.image_url );
-    }
-  };
+    let markup = `<!doctype html>${ post.content.raw }`;
+    await setContent( markup );
+
+    const imageUrls = [];
+
+    post.story_data.pages[0].elements.forEach( ( element ) => {
+      if ( 'image' === element.type ) {
+        imageUrls.push( element.resource.src );
+      }
+    } );
+
+    const zip = new JSZip();
+
+    zip.file( 'config.json', JSON.stringify( post ) );
+
+    await Promise.all( imageUrls.map( async ( url, index ) => {
+      const imageResponse = await fetch( url );
+      const imageBlob = await imageResponse.blob();
+      const imageName = `image-${ index + 1 }.png`
+      const imageFile = new File( [ imageBlob ], imageName );
+
+      markup = markup.replace( url, imageName );
+
+      zip.file( imageName, imageFile );
+    } ) );
+
+    zip.file( 'index.html', markup );
+
+    zip.generateAsync( { type: 'blob' } ).then( function( content ) {
+      // see FileSaver.js
+      saveAs( content, 'story-ad.zip' );
+    } );
+
+    console.log( imageUrls );
+  }
 
   const saveAndFetchContent = async () => {
     await saveStory();
 
     if (story && story.storyId ) {
       const post = await getStoryById(story.storyId);
-      await setContent( `<!doctype html>${ post.content.raw }`);
+      await zipStoryAd( post );
     }
   }
 
   useEffect( () => {
-   if ( screenshot ) {
-     saveAndFetchContent();
-   }
-  }, [ screenshot ] );
-
-  useEffect( () => {
     setCopyText( 'Copy Markup' );
-  }, [ screenshot, ctaText, ctaLink, landingPageType ] )
+  }, [ ctaText, ctaLink, landingPageType ] )
 
   const exportStoryAd = async () => {
-    await capture();
+    await saveAndFetchContent();
     await setTextAreaVisibility(true);
   };
 
