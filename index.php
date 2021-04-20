@@ -58,23 +58,6 @@
 
 	<script src='https://wordpress.app/wp-admin/load-scripts.php?c=0&amp;load%5Bchunk_0%5D=hoverIntent,wp-i18n&amp;ver=5.6.3'></script>
 	<script src='https://wordpress.app/wp-admin/js/common.min.js?ver=5.6.3' id='common-js'></script>
-	<script src='https://wordpress.app/wp-includes/js/hoverintent-js.min.js?ver=2.2.1' id='hoverintent-js-js'></script>
-	<script src='https://wordpress.app/wp-admin/js/svg-painter.js?ver=5.6.3' id='svg-painter-js'></script>
-	<script src='https://wordpress.app/wp-includes/js/dist/hooks.min.js?ver=84b89ab09cbfb4469f02183611cc0939' id='wp-hooks-js'></script>
-
-	<script src='https://wordpress.app/wp-includes/js/underscore.min.js?ver=1.8.3' id='underscore-js'></script>
-	<script id='wp-util-js-extra'>
-      var _wpUtilSettings = {"ajax":{"url":"\/wp-admin\/admin-ajax.php"}};
-	</script>
-	<script src='https://wordpress.app/wp-includes/js/wp-util.min.js?ver=5.6.3' id='wp-util-js'></script>
-
-	<script id='wp-api-request-js-extra'>
-      var wpApiSettings = {"root":"https:\/\/wordpress.app\/wp-json\/","nonce":"5cd6ce0dfe","versionString":"wp\/v2\/"};
-	</script>
-	<script src='https://wordpress.app/wp-includes/js/api-request.min.js?ver=5.6.3' id='wp-api-request-js'></script>
-	<script src='https://wordpress.app/wp-includes/js/dist/dom-ready.min.js?ver=aca9d46a9f06d1759d4bcd73ba659133' id='wp-dom-ready-js'></script>
-	<script src='https://wordpress.app/wp-includes/js/dist/a11y.min.js?ver=410fc057d03809dd6a54fcc90ceca441' id='wp-a11y-js'></script>
-	<script src='https://wordpress.app/wp-includes/js/clipboard.min.js?ver=5.6.3' id='clipboard-js'></script>
 
 	<script src='https://wordpress.app/wp-includes/js/dist/url.min.js?ver=98645f0502e5ed8dadffd161e39072d2' id='wp-url-js'></script>
 	<script src='https://wordpress.app/wp-includes/js/dist/api-fetch.min.js?ver=4dec825c071b87c57f687eb90f7c23c3' id='wp-api-fetch-js'></script>
