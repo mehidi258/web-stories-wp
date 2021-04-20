@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<title>Web Story Ad</title>
 
-	<!-- https://wordpress.app/wp-admin/load-styles.php?load[chunk_0]=common -->
+	<!-- /wp-admin/load-styles.php?load[chunk_0]=common -->
 	<link rel='stylesheet' href='web-stories-ad/assets/wp-assets/load-style-php.css'/>
 	<link crossorigin="anonymous" rel='stylesheet' crossorigin='anonymous' href='https://fonts.googleapis.com/css?family=Google+Sans%7CGoogle+Sans%3Ab%7CGoogle+Sans%3A500&#038;display=swap&#038;ver=1.7.0-alpha.0'/>
 	<link rel='stylesheet' href='web-stories-wp/assets/css/vendors-edit-story.css'/>
@@ -59,13 +59,21 @@
 	</div>
 
 	<script src='web-stories-ad/assets/wp-assets/wp-polyfill.min.js'></script>
-	<script src='web-stories-ad/assets/wp-assets/load-scripts.js'></script> <!-- https://wordpress.app/wp-admin/load-scripts.php?load[chunk_0]=wp-i18n -->
-
+	<script src='web-stories-ad/assets/wp-assets/load-scripts.js'></script> <!-- /wp-admin/load-scripts.php?load[chunk_0]=wp-i18n -->
 	<script src='web-stories-ad/assets/wp-assets/url.min.js'></script>
 	<script src='web-stories-ad/assets/wp-assets/api-fetch.min.js'></script>
-	<script src='https://wordpress.app/wp-content/plugins/web-stories-wp/assets/js/vendors-edit-story-stories-dashboard-f6a93713134bae1f571e.js'></script>
-	<script src='https://wordpress.app/wp-content/plugins/web-stories-wp/assets/js/vendors-edit-story-62b505bcefb44a0adf05.js'></script>
-	<script src='https://wordpress.app/wp-content/plugins/web-stories-wp/assets/js/edit-story-stories-dashboard-a0dd4de352b608d6cd9b.js'></script>
-	<script src='https://wordpress.app/wp-content/plugins/web-stories-wp/assets/js/edit-story.js?ver=d1683a0c1cc0480a1798f1da20f3b018'></script>
+
+	<?php
+	$chunks_file =  __DIR__ . '/assets/js/edit-story.chunks.php';
+	$chunks = is_readable( $chunks_file ) ? require $chunks_file : [];
+
+	if ( ! empty( $chunks['js'] ) && is_array( $chunks['js'] ) ) {
+		foreach ( $chunks['js'] as $file_name ) {
+			printf( '<script src="web-stories-ad/assets/js/%s.js"></script>', $file_name );
+		}
+	}
+	?>
+	<script src='web-stories-ad/assets/js/edit-story.js'></script>
+
 </body>
 </html>
