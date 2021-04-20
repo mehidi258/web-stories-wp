@@ -6,7 +6,7 @@
 
 	<!-- /wp-admin/load-styles.php?load[chunk_0]=common -->
 	<link rel='stylesheet' href='web-stories-ad/assets/wp-assets/load-style-php.css'/>
-	<link crossorigin="anonymous" rel='stylesheet' crossorigin='anonymous' href='https://fonts.googleapis.com/css?family=Google+Sans%7CGoogle+Sans%3Ab%7CGoogle+Sans%3A500&#038;display=swap&#038;ver=1.7.0-alpha.0'/>
+	<link rel='stylesheet' crossorigin='anonymous' href='https://fonts.googleapis.com/css?family=Google+Sans%7CGoogle+Sans%3Ab%7CGoogle+Sans%3A500&#038;display=swap&#038;ver=1.7.0-alpha.0'/>
 	<link rel='stylesheet' href='web-stories-wp/assets/css/vendors-edit-story.css'/>
 	<link rel='stylesheet' href='web-stories-wp/assets/css/vendors-edit-story-rtl.css'/>
 	<link rel='stylesheet' href='web-stories-wp/assets/css/edit-story-rtl.css'/>
