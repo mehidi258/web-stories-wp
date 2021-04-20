@@ -57,7 +57,6 @@
 	</div><!-- wpcontent -->
 
 	<script src='https://wordpress.app/wp-admin/load-scripts.php?c=0&amp;load%5Bchunk_0%5D=hoverIntent,wp-i18n&amp;ver=5.6.3'></script>
-	<script src='https://wordpress.app/wp-admin/js/common.min.js?ver=5.6.3' id='common-js'></script>
 
 	<script src='https://wordpress.app/wp-includes/js/dist/url.min.js?ver=98645f0502e5ed8dadffd161e39072d2' id='wp-url-js'></script>
 	<script src='https://wordpress.app/wp-includes/js/dist/api-fetch.min.js?ver=4dec825c071b87c57f687eb90f7c23c3' id='wp-api-fetch-js'></script>
@@ -65,8 +64,6 @@
 	<script src='https://wordpress.app/wp-content/plugins/web-stories-wp/assets/js/vendors-edit-story-62b505bcefb44a0adf05.js' id='vendors-edit-story-62b505bcefb44a0adf05-js'></script>
 	<script src='https://wordpress.app/wp-content/plugins/web-stories-wp/assets/js/edit-story-stories-dashboard-a0dd4de352b608d6cd9b.js' id='edit-story-stories-dashboard-a0dd4de352b608d6cd9b-js'></script>
 	<script src='https://wordpress.app/wp-content/plugins/web-stories-wp/assets/js/edit-story.js?ver=d1683a0c1cc0480a1798f1da20f3b018' id='edit-story-js'></script>
-
-	<div class="clear"></div>
 </div><!-- wpwrap -->
 </body>
 </html>
