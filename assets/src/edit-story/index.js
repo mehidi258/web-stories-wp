@@ -28,9 +28,11 @@ import { initializeTracking } from '@web-stories-wp/tracking';
  * Internal dependencies
  */
 import App from './editorApp';
+import dummyConfig from './dummyConfig';
 import './style.css'; // This way the general editor styles are loaded before all the component styles.
 
-__webpack_public_path__ = global.webStoriesEditorSettings.publicPath;
+// __webpack_public_path__ = global.webStoriesEditorSettings.publicPath;
+__webpack_public_path__ = dummyConfig.publicPath;
 
 /**
  * Initializes the web stories editor.
@@ -60,7 +62,9 @@ const initialize = (id, config, flags) => {
 };
 
 const initializeWithConfig = () => {
-  const { id, config, flags } = window.webStoriesEditorSettings;
+  // const { id, config, flags } = window.webStoriesEditorSettings;
+  const { id, config, flags } = dummyConfig;
+
   initialize(id, config, flags);
 };
 

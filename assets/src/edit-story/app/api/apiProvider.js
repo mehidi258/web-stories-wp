@@ -35,6 +35,7 @@ import base64Encode from '../../utils/base64Encode';
 import { useConfig } from '../config';
 import Context from './context';
 import removeImagesFromPageTemplates from './removeImagesFromPageTemplates';
+import dummyPost from './dummyData/dummyPost';
 
 function APIProvider({ children }) {
   const {
@@ -66,7 +67,9 @@ function APIProvider({ children }) {
         web_stories_demo: false,
       });
 
-      return apiFetch({ path });
+      return new Promise( resolve => resolve( dummyPost ) );
+
+      // return apiFetch({ path });
     },
     [stories]
   );
