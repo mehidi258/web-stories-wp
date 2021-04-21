@@ -41,30 +41,29 @@ import { Row } from '../../../form';
 import { useAPI, useStory } from '../../../../app';
 import useAdStory from '../../../../app/storyAd/useAdStory';
 import { ctaOptions, landPageOptions } from './selectorOptions';
+import getStoryPropsToSave from '../../../../app/story/utils/getStoryPropsToSave';
 
-const FieldRow = styled(Row)`
+const FieldRow = styled( Row )`
   margin-bottom: 12px;
 `;
 
-const FieldRowButton = styled(Row)`
+const FieldRowButton = styled( Row )`
   margin-bottom: 12px;
   justify-content: flex-end;
 `;
 
 function StoryAdPanel() {
-  const {
-    actions: { getStoryById },
-  } = useAPI();
-  const [showTextArea, setTextAreaVisibility] = useState(false);
-  const [content, setContent] = useState('');
-  const [copyText, setCopyText] = useState('Copy Markup');
+  const [ showTextArea, setTextAreaVisibility ] = useState( false );
+  const [ content, setContent ] = useState( '' );
+  const [ copyText, setCopyText ] = useState( 'Copy Markup' );
   const textAreaRef = useRef();
 
-  const { saveStory, story } = useStory(
-    ({ actions: { saveStory }, state: { story } }) => ({
-      saveStory,
+  const { story, pages, currentPage } = useStory(
+    ( { state: { story, pages, currentPage } } ) => ( {
       story,
-    })
+      pages,
+      currentPage,
+    } ),
   );
 
   const {
@@ -72,13 +71,13 @@ function StoryAdPanel() {
     state: { ctaLink, ctaText, landingPageType },
   } = useAdStory();
 
-  const zipStoryAd = async ( post ) => {
-    let markup = `<!doctype html>${ post.content.raw }`;
+  const zipStoryAd = async ( storyContent ) => {
+    let markup = `<!doctype html>${ storyContent }`;
     await setContent( markup );
 
     const imageUrls = [];
 
-    post.story_data.pages[0].elements.forEach( ( element ) => {
+    currentPage.elements.forEach( ( element ) => {
       if ( 'image' === element.type ) {
         imageUrls.push( element.resource.src );
       }
@@ -86,12 +85,12 @@ function StoryAdPanel() {
 
     const zip = new JSZip();
 
-    zip.file( 'config.json', JSON.stringify( post ) );
+    zip.file( 'config.json', JSON.stringify( story ) );
 
     await Promise.all( imageUrls.map( async ( url, index ) => {
       const imageResponse = await fetch( url );
       const imageBlob = await imageResponse.blob();
-      const imageName = `image-${ index + 1 }.png`
+      const imageName = `image-${ index + 1 }.png`;
       const imageFile = new File( [ imageBlob ], imageName );
 
       markup = markup.replace( url, imageName );
@@ -105,122 +104,120 @@ function StoryAdPanel() {
       // see FileSaver.js
       saveAs( content, 'story-ad.zip' );
     } );
-  }
+  };
 
   const saveAndFetchContent = async () => {
-    await saveStory();
-
-    if (story && story.storyId ) {
-      const post = await getStoryById(story.storyId);
-      await zipStoryAd( post );
-    }
-  }
+    const storyAd = { ctaLink, ctaText, landingPageType };
+    const storyProps = getStoryPropsToSave( { story, pages, metadata: {}, flags: {}, storyAd } );
+    await zipStoryAd( storyProps.content );
+  };
 
   useEffect( () => {
     setCopyText( 'Copy Markup' );
-  }, [ ctaText, ctaLink, landingPageType ] )
+  }, [ ctaText, ctaLink, landingPageType ] );
 
   const exportStoryAd = async () => {
     await saveAndFetchContent();
-    await setTextAreaVisibility(true);
+    await setTextAreaVisibility( true );
   };
 
-  const handleCTALinkChange = (event) => {
+  const handleCTALinkChange = ( event ) => {
     let link = event.currentTarget.value;
 
-    link = (link.indexOf('://') === -1) ? 'https://' + link : link;
+    link = ( link.indexOf( '://' ) === -1 ) ? 'https://' + link : link;
 
     updateCTALink( link );
   };
 
   const copyMarkup = () => {
     textAreaRef.current.select();
-    document.execCommand('copy');
-    setCopyText('Copied');
+    document.execCommand( 'copy' );
+    setCopyText( 'Copied' );
   };
 
   return (
     <SimplePanel
       name="story-ad"
-      title={__('Story Ad', 'web-stories')}
+      title={ __( 'Story Ad', 'web-stories' ) }
       collapsedByDefault
     >
       <FieldRow>
         <Input
-          value={ctaLink}
-          onChange={handleCTALinkChange}
-          placeholder={__('Enter CTA Link', 'web-stories')}
-          aria-label={__('CTA Link', 'web-stories')}
+          value={ ctaLink }
+          onChange={ handleCTALinkChange }
+          placeholder={ __( 'Enter CTA Link', 'web-stories' ) }
+          aria-label={ __( 'CTA Link', 'web-stories' ) }
         />
       </FieldRow>
 
       <FieldRow>
         <DropDown
-          emptyText={__('No options available', 'web-stories')}
-          options={ctaOptions}
-          hasError={false}
-          hint={''}
-          placeholder={__('Select CTA Text', 'web-stories')}
-          dropDownLabel={__('CTA Text', 'web-stories')}
-          isKeepMenuOpenOnSelection={false}
-          isRTL={false}
-          selectedValue={ctaText}
-          onMenuItemClick={(event, newValue) => {
-            updateCtaText(newValue);
-          }}
-          placement={PLACEMENT.BOTTOM}
+          emptyText={ __( 'No options available', 'web-stories' ) }
+          options={ ctaOptions }
+          hasError={ false }
+          hint={ '' }
+          placeholder={ __( 'Select CTA Text', 'web-stories' ) }
+          dropDownLabel={ __( 'CTA Text', 'web-stories' ) }
+          isKeepMenuOpenOnSelection={ false }
+          isRTL={ false }
+          selectedValue={ ctaText }
+          onMenuItemClick={ ( event, newValue ) => {
+            updateCtaText( newValue );
+          } }
+          placement={ PLACEMENT.BOTTOM }
         />
       </FieldRow>
 
       <FieldRow>
         <DropDown
-          emptyText={__('No options available', 'web-stories')}
-          options={landPageOptions}
-          hasError={false}
-          hint={''}
-          placeholder={__('Select Landing Page Type', 'web-stories')}
-          dropDownLabel={__('Landing Page Type', 'web-stories')}
-          isKeepMenuOpenOnSelection={false}
-          isRTL={false}
-          selectedValue={landingPageType}
-          onMenuItemClick={(event, newValue) => {
-            updateLandingPageType(newValue);
-          }}
-          placement={PLACEMENT.BOTTOM}
+          emptyText={ __( 'No options available', 'web-stories' ) }
+          options={ landPageOptions }
+          hasError={ false }
+          hint={ '' }
+          placeholder={ __( 'Select Landing Page Type', 'web-stories' ) }
+          dropDownLabel={ __( 'Landing Page Type', 'web-stories' ) }
+          isKeepMenuOpenOnSelection={ false }
+          isRTL={ false }
+          selectedValue={ landingPageType }
+          onMenuItemClick={ ( event, newValue ) => {
+            updateLandingPageType( newValue );
+          } }
+          placement={ PLACEMENT.BOTTOM }
         />
       </FieldRow>
       <FieldRow>
         <Button
-          type={BUTTON_TYPES.SECONDARY}
-          variant={BUTTON_VARIANTS.RECTANGLE}
-          size={BUTTON_SIZES.SMALL}
-          onClick={exportStoryAd}
+          type={ BUTTON_TYPES.SECONDARY }
+          variant={ BUTTON_VARIANTS.RECTANGLE }
+          size={ BUTTON_SIZES.SMALL }
+          onClick={ exportStoryAd }
         >
-          {__('Export', 'web-stories')}
+          { __( 'Export', 'web-stories' ) }
         </Button>
       </FieldRow>
-      {showTextArea ? (
+      { showTextArea ? (
         <>
           <FieldRow>
             <TextArea
-              onChange={() => {}}
-              value={content}
-              ref={textAreaRef}
-              aria-label={__('Ad Markup', 'web-stories')}
+              onChange={ () => {
+              } }
+              value={ content }
+              ref={ textAreaRef }
+              aria-label={ __( 'Ad Markup', 'web-stories' ) }
             />
           </FieldRow>
           <FieldRowButton>
             <Button
-              type={BUTTON_TYPES.SECONDARY}
-              variant={BUTTON_VARIANTS.RECTANGLE}
-              size={BUTTON_SIZES.SMALL}
-              onClick={copyMarkup}
+              type={ BUTTON_TYPES.SECONDARY }
+              variant={ BUTTON_VARIANTS.RECTANGLE }
+              size={ BUTTON_SIZES.SMALL }
+              onClick={ copyMarkup }
             >
-              {copyText}
+              { copyText }
             </Button>
           </FieldRowButton>
         </>
-      ) : null}
+      ) : null }
     </SimplePanel>
   );
 }
