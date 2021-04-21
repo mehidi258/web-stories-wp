@@ -65,16 +65,7 @@ function CarouselLayout() {
   }
 
   return (
-    <Wrapper aria-label={__('Page Carousel', 'web-stories')}>
-      <Area area="prev-navigation">
-        <CarouselScrollBack />
-      </Area>
-      <Area area="carousel">
-        <CarouselList />
-      </Area>
-      <Area area="next-navigation">
-        <CarouselScrollForward />
-      </Area>
+    <Wrapper aria-label={__('Footer', 'web-stories')}>
       <Area area="primary">
         <PrimaryMenu />
       </Area>

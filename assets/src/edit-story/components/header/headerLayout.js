@@ -26,6 +26,7 @@ import { __ } from '@web-stories-wp/i18n';
 import Buttons from './buttons';
 import Title from './title';
 import HeaderProvider from './provider';
+import ImportButton from './buttons/importButton';
 
 const Background = styled.header.attrs({
   role: 'group',
@@ -51,7 +52,7 @@ function HeaderLayout() {
     <HeaderProvider>
       <Background>
         <Head>
-          <Title />
+          <ImportButton />
         </Head>
         <ButtonCell>
           <Buttons />

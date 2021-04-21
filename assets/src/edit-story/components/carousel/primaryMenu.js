@@ -17,7 +17,7 @@
 /**
  * External dependencies
  */
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { __ } from '@web-stories-wp/i18n';
 import { trackEvent } from '@web-stories-wp/tracking';
@@ -25,14 +25,7 @@ import { trackEvent } from '@web-stories-wp/tracking';
 /**
  * Internal dependencies
  */
-import {
-  Button,
-  Icons,
-  BUTTON_VARIANTS,
-  BUTTON_TYPES,
-  BUTTON_SIZES,
-  PLACEMENT,
-} from '../../../design-system';
+import { Button, BUTTON_SIZES, BUTTON_TYPES, BUTTON_VARIANTS, Icons, PLACEMENT } from '../../../design-system';
 import { useMetaBoxes } from '../../integrations/wordpress/metaBoxes';
 import Modal from '../modal';
 import Tooltip from '../tooltip';
@@ -125,23 +118,6 @@ function PrimaryMenu() {
               <Space />
             </>
           )}
-          <Box>
-            <Tooltip
-              title={__('Grid View', 'web-stories')}
-              placement={PLACEMENT.TOP}
-              hasTail
-            >
-              <Button
-                variant={BUTTON_VARIANTS.SQUARE}
-                type={BUTTON_TYPES.PLAIN}
-                size={BUTTON_SIZES.SMALL}
-                onClick={toggleModal}
-                aria-label={__('Grid View', 'web-stories')}
-              >
-                <Icons.Box4 />
-              </Button>
-            </Tooltip>
-          </Box>
           <ZoomSelector />
         </MenuItems>
       </Wrapper>
