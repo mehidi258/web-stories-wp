@@ -139,7 +139,7 @@ function InspectorProvider({ children }) {
         },
         {
           id: DOCUMENT,
-          title: __('Document', 'web-stories'),
+          title: __('Meta', 'web-stories'),
           Pane: DocumentInspector,
         },
 

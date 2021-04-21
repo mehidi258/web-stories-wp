@@ -17,24 +17,12 @@
 /**
  * Internal dependencies
  */
-import {
-  PublishPanel,
-  ExcerptPanel,
-  SlugPanel,
-  StatusPanel,
-  PageAdvancementPanel,
-  StoryAdPanel,
-} from '../../panels/document';
+import { StoryAdPanel } from '../../panels/document';
 import isStoryAd from '../../../utils/isStoryAd';
 
 function DocumentInspector() {
   return (
     <>
-      <StatusPanel />
-      <PublishPanel />
-      <ExcerptPanel />
-      <SlugPanel />
-      <PageAdvancementPanel />
       {isStoryAd() ? <StoryAdPanel /> : null}
     </>
   );
