@@ -15,42 +15,12 @@
  */
 
 /**
- * External dependencies
- */
-import { useCallback } from 'react';
-
-/**
- * Internal dependencies
- */
-import { addQueryArgs } from '../../design-system';
-import isStoryAd from './isStoryAd';
-
-/**
  * Update page URL in browser.
  *
- * @param {number} postId Current story id.
  * @return {Function} Function to refresh the post edit URL.
  */
-function useRefreshPostEditURL(postId) {
-  const refreshPostEditURL = useCallback(() => {
-    const args = {
-      post: postId,
-      action: 'edit',
-    };
-
-    if (isStoryAd()) {
-      args.story_type = 'ad';
-    }
-
-    const getPostEditURL = addQueryArgs('post.php', args);
-
-    window.history.replaceState(
-      { id: postId },
-      'Post ' + postId,
-      getPostEditURL + window.location.hash
-    );
-  }, [postId]);
-  return refreshPostEditURL;
+function useRefreshPostEditURL() {
+  return window.location.href;
 }
 
 export default useRefreshPostEditURL;

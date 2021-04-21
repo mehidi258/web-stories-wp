@@ -57,7 +57,7 @@ function useSaveStory({ storyId, pages, story, storyAd, updateStory }) {
   const [isSaving, setIsSaving] = useState(false);
   const [isFreshlyPublished, setIsFreshlyPublished] = useState(false);
 
-  const refreshPostEditURL = useRefreshPostEditURL(storyId);
+  const refreshPostEditURL = useRefreshPostEditURL();
 
   const saveStory = useCallback(
     (props) => {

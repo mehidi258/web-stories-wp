@@ -50,7 +50,7 @@ function Publish() {
   const [showDialog, setShowDialog] = useState(false);
   const { capabilities } = useConfig();
 
-  const refreshPostEditURL = useRefreshPostEditURL(storyId);
+  const refreshPostEditURL = useRefreshPostEditURL();
   // Offset the date by one minute to accommodate for network latency.
   const hasFutureDate = isAfter(
     subMinutes(toDate(date, getOptions()), 1),
