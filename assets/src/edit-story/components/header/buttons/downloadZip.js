@@ -17,27 +17,87 @@
 /**
  * External dependencies
  */
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { __ } from '@web-stories-wp/i18n';
 
 /**
  * Internal dependencies
  */
 import { Button, BUTTON_SIZES, BUTTON_TYPES, BUTTON_VARIANTS } from '../../../../design-system';
+import { useStory } from '../../../app';
+import useAdStory from '../../../app/storyAd/useAdStory';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+import getStoryPropsToSave from '../../../app/story/utils/getStoryPropsToSave';
 
 function DownloadZip() {
   const [isDownloading, setIsDownloading] = useState(false);
+  const { story, pages, currentPage } = useStory(
+    ( { state: { story, pages, currentPage } } ) => ( {
+      story,
+      pages,
+      currentPage,
+    } ),
+  );
 
-  const handleDownload = useCallback(() => {
+  const {
+    state: { ctaLink, ctaText, landingPageType },
+  } = useAdStory();
 
-  }, []);
+  const zipStoryAd = async ( storyContent ) => {
+    let markup = `<!doctype html>${ storyContent }`;
+    const imageUrls = [];
+
+    currentPage.elements.forEach( ( element ) => {
+      if ( 'image' === element.type ) {
+        imageUrls.push( element.resource.src );
+      }
+    } );
+
+    const zip = new JSZip();
+
+    zip.file( 'config.json', JSON.stringify( {
+      currentPage,
+      story
+    } ) );
+
+    await Promise.all( imageUrls.map( async ( url, index ) => {
+      const imageResponse = await fetch( url );
+      const imageBlob = await imageResponse.blob();
+      const imageName = `image-${ index + 1 }.png`;
+      const imageFile = new File( [ imageBlob ], imageName );
+
+      const encodedUrl = url.replaceAll( '&', '&amp;' ); // To match url in the rendered markup.
+      markup = markup.replace( encodedUrl, imageName );
+
+      zip.file( imageName, imageFile );
+    } ) );
+
+    zip.file( 'index.html', markup );
+    zip.file( 'README.txt', 'TBD' );
+
+    zip.generateAsync( { type: 'blob' } ).then( ( content ) => {
+      saveAs( content, 'story-ad.zip' );
+    } );
+  };
+
+  const download = async () => {
+    const storyAd = { ctaLink, ctaText, landingPageType };
+
+    await setIsDownloading( true );
+
+    const storyProps = getStoryPropsToSave( { story, pages, metadata: {}, flags: {}, storyAd } );
+    await zipStoryAd( storyProps.content );
+
+    await setIsDownloading( false );
+  };
 
   return (
     <Button
       variant={BUTTON_VARIANTS.RECTANGLE}
       type={BUTTON_TYPES.PRIMARY}
       size={BUTTON_SIZES.SMALL}
-      onClick={handleDownload}
+      onClick={download}
       disabled={isDownloading}
     >
       { __('Download Zip', 'web-stories') }
