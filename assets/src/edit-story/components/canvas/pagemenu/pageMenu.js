@@ -111,40 +111,6 @@ function PageMenu() {
 
   return (
     <Wrapper isWidePage={isWidePage}>
-      <Text size={THEME_CONSTANTS.TYPOGRAPHY.PRESET_SIZES.X_SMALL}>
-        {sprintf(
-          /* translators: %s: page number. */
-          __('Page %s', 'web-stories'),
-          currentPageNumber
-        )}
-      </Text>
-      <CountSpace />
-      <PageMenuButton
-        title={__('Delete page', 'web-stories')}
-        onClick={handleDeletePage}
-        aria-label={__('Delete Page', 'web-stories')}
-      >
-        <Icons.Trash />
-      </PageMenuButton>
-      <IconSpace />
-      <PageMenuButton
-        title={__('Duplicate page', 'web-stories')}
-        onClick={handleDuplicatePage}
-        aria-label={__('Duplicate Page', 'web-stories')}
-      >
-        <Icons.PagePlus />
-      </PageMenuButton>
-      <IconSpace />
-      <PageMenuButton
-        title={__('New page', 'web-stories')}
-        onClick={handleAddPage}
-        aria-label={__('Add New Page', 'web-stories')}
-      >
-        <Icons.PlusOutline />
-      </PageMenuButton>
-      <IconSpace />
-      <Divider />
-      <IconSpace />
       <PageMenuButton
         title={__('Undo', 'web-stories')}
         shortcut="mod+z"

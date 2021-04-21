@@ -68,6 +68,7 @@ const Tab = styled.li.attrs(({ isActive }) => ({
   justify-content: center;
   position: relative;
   transition: color 0.2s ease;
+  flex: 1;
   color: ${({ theme, isActive }) =>
     isActive ? theme.colors.fg.primary : theme.colors.fg.tertiary};
 

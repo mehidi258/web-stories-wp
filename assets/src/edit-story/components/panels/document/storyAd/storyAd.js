@@ -50,8 +50,8 @@ function StoryAdPanel() {
   return (
     <SimplePanel
       name="story-ad"
-      title={ __( 'Story Ad', 'web-stories' ) }
-      collapsedByDefault
+      title={ __( 'Call To Action', 'web-stories' ) }
+      collapsedByDefault={ false }
     >
       <FieldRow>
         <Input

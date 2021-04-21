@@ -18,7 +18,7 @@
  * External dependencies
  */
 import PropTypes from 'prop-types';
-import { useCallback, useState, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce/lib';
 import { __ } from '@web-stories-wp/i18n';
 
@@ -31,8 +31,8 @@ import { useStory } from '../../app/story';
 
 import { PRE_PUBLISH_MESSAGE_TYPES } from '../../app/prepublish';
 import { useHighlights } from '../../app/highlights';
-import { DOCUMENT, DESIGN, PREPUBLISH } from './constants';
-import PrepublishInspector, { usePrepublishChecklist } from './prepublish';
+import { DESIGN, DOCUMENT, PREPUBLISH } from './constants';
+import { usePrepublishChecklist } from './prepublish';
 import Context from './context';
 import DesignInspector from './design';
 import DocumentInspector from './document';
@@ -141,13 +141,6 @@ function InspectorProvider({ children }) {
           id: DOCUMENT,
           title: __('Meta', 'web-stories'),
           Pane: DocumentInspector,
-        },
-
-        {
-          icon: checklist.length > 0 ? prepublishAlert : undefined,
-          id: PREPUBLISH,
-          title: __('Checklist', 'web-stories'),
-          Pane: PrepublishInspector,
         },
       ],
     },
