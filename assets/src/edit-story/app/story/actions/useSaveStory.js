@@ -15,25 +15,6 @@
  */
 
 /**
- * External dependencies
- */
-import { __ } from '@web-stories-wp/i18n';
-import { useCallback, useState } from 'react';
-import { useFeatures } from 'flagged';
-import { getTimeTracker } from '@web-stories-wp/tracking';
-
-/**
- * Internal dependencies
- */
-import objectPick from '../../../utils/objectPick';
-import { useAPI } from '../../api';
-import { useConfig } from '../../config';
-import useRefreshPostEditURL from '../../../utils/useRefreshPostEditURL';
-import { useSnackbar } from '../../../../design-system';
-import getStoryPropsToSave from '../utils/getStoryPropsToSave';
-import { useHistory } from '../../history';
-
-/**
  * Custom hook to save story.
  *
  * @param {Object} properties Properties to update.
@@ -45,76 +26,9 @@ import { useHistory } from '../../history';
  * @return {Function} Function that can be called to save a story.
  */
 function useSaveStory({ storyId, pages, story, storyAd, updateStory }) {
-  const {
-    actions: { saveStoryById },
-  } = useAPI();
-  const {
-    actions: { resetNewChanges },
-  } = useHistory();
-  const flags = useFeatures();
-  const { metadata } = useConfig();
-  const { showSnackbar } = useSnackbar();
-  const [isSaving, setIsSaving] = useState(false);
-  const [isFreshlyPublished, setIsFreshlyPublished] = useState(false);
+  const saveStory = () => {};
 
-  const refreshPostEditURL = useRefreshPostEditURL();
-
-  const saveStory = useCallback(
-    (props) => {
-      setIsSaving(true);
-
-      const isStoryAlreadyPublished = ['publish', 'future'].includes(
-        story.status
-      );
-
-      const trackTiming = getTimeTracker('load_save_story');
-
-      return saveStoryById({
-        storyId,
-        ...getStoryPropsToSave({ story, pages, metadata, flags, storyAd }),
-        ...props,
-      })
-        .then((post) => {
-          const properties = {
-            ...objectPick(post, ['status', 'slug', 'link']),
-            featuredMediaUrl: post.featured_media_url,
-            previewLink: post.preview_link,
-          };
-          updateStory({ properties });
-
-          refreshPostEditURL();
-
-          const isStoryPublished = ['publish', 'future'].includes(post.status);
-          setIsFreshlyPublished(!isStoryAlreadyPublished && isStoryPublished);
-        })
-        .catch(() => {
-          showSnackbar({
-            message: __('Failed to save the story', 'web-stories'),
-            dismissable: true,
-          });
-        })
-        .finally(() => {
-          setIsSaving(false);
-          resetNewChanges();
-          trackTiming();
-        });
-    },
-    [
-      story,
-      storyAd,
-      pages,
-      flags,
-      metadata,
-      saveStoryById,
-      storyId,
-      updateStory,
-      refreshPostEditURL,
-      showSnackbar,
-      resetNewChanges,
-    ]
-  );
-
-  return { saveStory, isSaving, isFreshlyPublished };
+  return { saveStory, isSaving: false, isFreshlyPublished: false };
 }
 
 export default useSaveStory;

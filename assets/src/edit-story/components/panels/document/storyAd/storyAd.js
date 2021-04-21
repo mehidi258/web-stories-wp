@@ -85,7 +85,10 @@ function StoryAdPanel() {
 
     const zip = new JSZip();
 
-    zip.file( 'config.json', JSON.stringify( story ) );
+    zip.file( 'config.json', JSON.stringify( {
+      currentPage,
+      story
+    } ) );
 
     await Promise.all( imageUrls.map( async ( url, index ) => {
       const imageResponse = await fetch( url );
@@ -93,15 +96,16 @@ function StoryAdPanel() {
       const imageName = `image-${ index + 1 }.png`;
       const imageFile = new File( [ imageBlob ], imageName );
 
-      markup = markup.replace( url, imageName );
+      const encodedUrl = url.replaceAll( '&', '&amp;' ); // To match url in the rendered markup.
+      markup = markup.replace( encodedUrl, imageName );
 
       zip.file( imageName, imageFile );
     } ) );
 
     zip.file( 'index.html', markup );
+    zip.file( 'README.txt', 'TBD' );
 
-    zip.generateAsync( { type: 'blob' } ).then( function( content ) {
-      // see FileSaver.js
+    zip.generateAsync( { type: 'blob' } ).then( ( content ) => {
       saveAs( content, 'story-ad.zip' );
     } );
   };

@@ -27,11 +27,7 @@ import CustomCSS from './utils/styles';
 import getFontDeclarations from './utils/getFontDeclarations';
 import OutputPageAd from './pageAd';
 
-function OutputStory({
-   story: {
-     autoAdvance,
-     defaultPageDuration,
-   },
+function OutputStoryAd({
    pages,
    storyAd
  }) {
@@ -70,8 +66,6 @@ function OutputStory({
           <OutputPageAd
             key={page.id}
             page={page}
-            autoAdvance={autoAdvance}
-            defaultPageDuration={defaultPageDuration}
           />
         ))}
     </body>
@@ -79,8 +73,7 @@ function OutputStory({
   );
 }
 
-OutputStory.propTypes = {
-  story: StoryPropTypes.story.isRequired,
+OutputStoryAd.propTypes = {
   pages: PropTypes.arrayOf(StoryPropTypes.page).isRequired,
   metadata: PropTypes.shape({
     publisher: PropTypes.shape({
@@ -90,4 +83,4 @@ OutputStory.propTypes = {
   }).isRequired,
 };
 
-export default OutputStory;
+export default OutputStoryAd;

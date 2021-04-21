@@ -32,7 +32,7 @@ import getLongestMediaElement from './utils/getLongestMediaElement';
 
 const ASPECT_RATIO = `${PAGE_WIDTH}:${PAGE_HEIGHT}`;
 
-function OutputPage({ page, autoAdvance, defaultPageDuration }) {
+function OutputPageAd({ page, autoAdvance, defaultPageDuration }) {
   const { id, animations, elements, backgroundColor } = page;
 
   const [backgroundElement, ...regularElements] = elements;
@@ -114,15 +114,15 @@ function OutputPage({ page, autoAdvance, defaultPageDuration }) {
   );
 }
 
-OutputPage.propTypes = {
+OutputPageAd.propTypes = {
   page: StoryPropTypes.page.isRequired,
   autoAdvance: PropTypes.bool,
   defaultPageDuration: PropTypes.number,
 };
 
-OutputPage.defaultProps = {
+OutputPageAd.defaultProps = {
   autoAdvance: true,
   defaultPageDuration: 7,
 };
 
-export default OutputPage;
+export default OutputPageAd;
