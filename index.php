@@ -21,7 +21,7 @@
 	<div class="web-stories-wp">
 		<h1 class="screen-reader-text hide-if-no-js">Web Stories</h1>
 		<div id="web-stories-editor" class="web-stories-editor-app-container hide-if-no-js">
-			<h1 class="loading-message">Please wait...</h1>
+			<h1 class="loading-message align-center">Please wait...</h1>
 		</div>
 
 		<div class="wrap hide-if-js web-stories-wp-no-js">

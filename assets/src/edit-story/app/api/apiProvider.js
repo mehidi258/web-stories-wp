@@ -37,17 +37,13 @@ import Context from './context';
 import removeImagesFromPageTemplates from './removeImagesFromPageTemplates';
 import dummyPost from './dummyData/dummyPost';
 import dummyUser from './dummyData/dummyUser';
+import dummyMedia from './dummyData/dummyMedia';
 
 function APIProvider({ children }) {
   const {
     api: {
       stories,
       media,
-      link,
-      users,
-      statusCheck,
-      metaBoxes,
-      currentUser,
       storyLocking,
     },
     encodeMarkup,
@@ -61,38 +57,24 @@ function APIProvider({ children }) {
   });
 
   const getStoryById = useCallback(
-    (storyId) => {
-      const path = addQueryArgs(`${stories}${storyId}/`, {
-        context: 'edit',
-        _embed: 'wp:featuredmedia,wp:lockuser,author',
-        web_stories_demo: false,
-      });
-
+    () => {
       return new Promise( resolve => resolve( dummyPost ) );
-
-      // return apiFetch({ path });
     },
-    [stories]
+    []
   );
 
   const getStoryLockById = useCallback(
-    (storyId) => {
-      const path = addQueryArgs(`${stories}${storyId}/lock`, {
-        _embed: 'author',
-      });
-
-      return apiFetch({ path });
+    () => {
+      return new Promise(resolve => resolve( {} ));
     },
-    [stories]
+    []
   );
 
   const setStoryLockById = useCallback(
-    (storyId) => {
-      const path = `${stories}${storyId}/lock`;
-
-      return apiFetch({ path, method: 'POST' });
+    () => {
+      return new Promise(resolve => resolve( {} ));
     },
-    [stories]
+    []
   );
 
   const deleteStoryLockById = useCallback(
@@ -108,16 +90,10 @@ function APIProvider({ children }) {
   );
 
   const getDemoStoryById = useCallback(
-    (storyId) => {
-      const path = addQueryArgs(`${stories}${storyId}/`, {
-        context: 'edit',
-        _embed: 'wp:featuredmedia,author',
-        web_stories_demo: true,
-      });
-
-      return apiFetch({ path });
+    () => {
+      return new Promise(resolve => resolve( {} ));
     },
-    [stories]
+    []
   );
 
   const getStorySaveData = useCallback(
@@ -153,21 +129,10 @@ function APIProvider({ children }) {
   );
 
   const saveStoryById = useCallback(
-    /**
-     * Fire REST API call to save story.
-     *
-     * @param {import('../../types').Story} story Story object.
-     * @return {Promise} Return apiFetch promise.
-     */
-    (story) => {
-      const { storyId } = story;
-      return apiFetch({
-        path: `${stories}${storyId}/`,
-        data: getStorySaveData(story),
-        method: 'POST',
-      });
+    () => {
+      return new Promise(resolve => resolve( {} ));
     },
-    [stories, getStorySaveData]
+    []
   );
 
   const autoSaveById = useCallback(
@@ -178,14 +143,9 @@ function APIProvider({ children }) {
      * @return {Promise} Return apiFetch promise.
      */
     (story) => {
-      const { storyId } = story;
-      return apiFetch({
-        path: `${stories}${storyId}/autosaves/`,
-        data: getStorySaveData(story),
-        method: 'POST',
-      });
+      return new Promise(resolve => resolve( {} ));
     },
-    [stories, getStorySaveData]
+    []
   );
 
   const getMedia = useCallback(
@@ -216,11 +176,13 @@ function APIProvider({ children }) {
         apiPath = addQueryArgs(apiPath, { cache_bust: true });
       }
 
-      return apiFetch({ path: apiPath }).then((response) => {
-        return { data: response.body, headers: response.headers };
-      });
+      return new Promise( resolve => resolve( dummyMedia ) );
+
+      // return apiFetch({ path: apiPath }).then((response) => {
+      //   return { data: response.body, headers: response.headers };
+      // });
     },
-    [media]
+    []
   );
 
   /**
@@ -232,22 +194,10 @@ function APIProvider({ children }) {
    * @return {Promise} Media Object Promise.
    */
   const uploadMedia = useCallback(
-    (file, additionalData) => {
-      // Create upload payload
-      const data = new window.FormData();
-      data.append('file', file, file.name || file.type.replace('/', '.'));
-      Object.entries(additionalData).forEach(([key, value]) =>
-        data.append(key, value)
-      );
-
-      // TODO: Intercept window.fetch here to support progressive upload indicator when uploading
-      return apiFetch({
-        path: media,
-        body: data,
-        method: 'POST',
-      });
+    () => {
+      return new Promise(resolve => resolve( {} ));
     },
-    [media]
+    []
   );
 
   /**
@@ -258,14 +208,10 @@ function APIProvider({ children }) {
    * @return {Promise} Media Object Promise.
    */
   const updateMedia = useCallback(
-    (mediaId, data) => {
-      return apiFetch({
-        path: `${media}${mediaId}/`,
-        data,
-        method: 'POST',
-      });
+    () => {
+      return new Promise(resolve => resolve( {} ));
     },
-    [media]
+    []
   );
 
   /**
@@ -275,19 +221,10 @@ function APIProvider({ children }) {
    * @return {Promise} Media Object Promise.
    */
   const deleteMedia = useCallback(
-    (mediaId) => {
-      // `apiFetch` by default turns `DELETE` requests into `POST` requests
-      // with `X-HTTP-Method-Override: DELETE` headers.
-      // However, some Web Application Firewall (WAF) solutions prevent this.
-      // `?_method=DELETE` is an alternative solution to override the request method.
-      // See https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters/#_method-or-x-http-method-override-header
-      return apiFetch({
-        path: addQueryArgs(`${media}${mediaId}/`, { _method: 'DELETE' }),
-        data: { force: true },
-        method: 'POST',
-      });
+    () => {
+      return new Promise(resolve => resolve( {} ));
     },
-    [media]
+    []
   );
 
   /**
@@ -298,41 +235,28 @@ function APIProvider({ children }) {
    * @return {Promise} Result promise
    */
   const getLinkMetadata = useCallback(
-    (url) => {
-      const path = addQueryArgs(link, { url });
-      return apiFetch({
-        path,
-      });
+    () => {
+      return new Promise(resolve => resolve( {} ));
     },
-    [link]
+    []
   );
 
   const getAuthors = useCallback(
-    (search = null) => {
-      return apiFetch({
-        path: addQueryArgs(users, { per_page: '100', who: 'authors', search }),
-      });
+    () => {
+      return new Promise( resolve => resolve( [] ) );
     },
-    [users]
+    []
   );
 
   const getCurrentUser = useCallback(() => {
     return new Promise(resolve => resolve( dummyUser ));
-
-    // return apiFetch({
-    //   path: currentUser,
-    // });
-  }, [currentUser]);
+  }, []);
 
   const updateCurrentUser = useCallback(
     (data) => {
-      return apiFetch({
-        path: currentUser,
-        method: 'POST',
-        data,
-      });
+      return new Promise(resolve => resolve( {} ));
     },
-    [currentUser]
+    []
   );
 
   // See https://github.com/WordPress/gutenberg/blob/148e2b28d4cdd4465c4fe68d97fcee154a6b209a/packages/edit-post/src/store/effects.js#L72-L126
@@ -349,14 +273,9 @@ function APIProvider({ children }) {
 
       additionalData.forEach(([key, value]) => formData.append(key, value));
 
-      return apiFetch({
-        url: metaBoxes,
-        method: 'POST',
-        body: formData,
-        parse: false,
-      });
+      return new Promise(resolve => resolve( {} ));
     },
-    [metaBoxes]
+    []
   );
 
   /**
@@ -367,13 +286,12 @@ function APIProvider({ children }) {
    */
   const getStatusCheck = useCallback(
     (content) => {
-      return apiFetch({
-        path: statusCheck,
-        data: { content: encodeMarkup ? base64Encode(content) : content },
-        method: 'POST',
-      });
+
+      return new Promise( resolve => resolve( {
+        success: true
+      } ) );
     },
-    [statusCheck, encodeMarkup]
+    []
   );
 
   const getPageTemplates = useCallback(

@@ -111,21 +111,8 @@ function InspectorProvider({ children }) {
   }, [currentPage]);
 
   const loadUsers = useCallback(() => {
-    if (!isUsersLoading && users.length === 0) {
-      setIsUsersLoading(true);
-      getAuthors()
-        .then((data) => {
-          const saveData = data.map(({ id, name }) => ({
-            id,
-            name,
-          }));
-          setUsers(saveData);
-        })
-        .finally(() => {
-          setIsUsersLoading(false);
-        });
-    }
-  }, [isUsersLoading, users.length, getAuthors]);
+    return true;
+  }, []);
 
   const state = {
     state: {
