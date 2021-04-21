@@ -36,6 +36,7 @@ import { useConfig } from '../config';
 import Context from './context';
 import removeImagesFromPageTemplates from './removeImagesFromPageTemplates';
 import dummyPost from './dummyData/dummyPost';
+import dummyUser from './dummyData/dummyUser';
 
 function APIProvider({ children }) {
   const {
@@ -316,9 +317,11 @@ function APIProvider({ children }) {
   );
 
   const getCurrentUser = useCallback(() => {
-    return apiFetch({
-      path: currentUser,
-    });
+    return new Promise(resolve => resolve( dummyUser ));
+
+    // return apiFetch({
+    //   path: currentUser,
+    // });
   }, [currentUser]);
 
   const updateCurrentUser = useCallback(

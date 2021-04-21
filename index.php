@@ -11,32 +11,6 @@
 	<link rel='stylesheet' href='web-stories-wp/assets/css/vendors-edit-story-rtl.css'/>
 	<link rel='stylesheet' href='web-stories-wp/assets/css/edit-story-rtl.css'/>
 	<link rel='stylesheet' href='web-stories-wp/assets/css/edit-story.css'/>
-	<style>
-		body.js.edit-story #web-stories-editor {
-			height: 100vh;
-		}
-	</style>
-
-	<script id='web-stories-tracking-js-after'>
-      window.webStoriesTrackingSettings = {
-        'trackingAllowed': false,
-        'trackingId': 'UA-168571240-1',
-        'trackingIdGA4': 'G-T88C9951CM',
-        'appVersion': '1.7.0-alpha.0',
-        'userProperties': {
-          'siteLocale': 'en_US',
-          'userLocale': 'en_US',
-          'userRole': 'administrator',
-          'enabledExperiments': 'enableQuickTips,customMetaBoxes,videoOptimization',
-          'wpVersion': '5.6.3',
-          'phpVersion': '8.0.3',
-          'isMultisite': 0,
-          'adNetwork': 'admanager',
-          'analytics': false,
-          'activePlugins': '',
-        },
-      };
-	</script>
 </head>
 <body class="edit-story no-js">
 

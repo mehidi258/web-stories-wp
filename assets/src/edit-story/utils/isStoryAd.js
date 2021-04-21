@@ -15,8 +15,5 @@
  */
 
 export default function isStoryAd() {
-  const url = new URL(window.location.href);
-  const storyType = url.searchParams.get('story_type');
-
-  return 'ad' === storyType;
+  return true; // @todo May be use some constant instead.
 }

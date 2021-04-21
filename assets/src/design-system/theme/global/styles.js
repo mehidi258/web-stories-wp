@@ -34,5 +34,9 @@ export const Styles = createGlobalStyle`
     box-sizing: border-box;
   }
 
+  #web-stories-editor {
+	  height: 100vh;
+  }
+
   ${overrideFocusOutlineStyles};
 `;

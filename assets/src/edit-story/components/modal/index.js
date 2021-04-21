@@ -27,8 +27,8 @@ import { createGlobalStyle } from 'styled-components';
 import { ADMIN_TOOLBAR_HEIGHT } from '../../constants';
 import theme from '../../theme';
 
-const ADMIN_MENU_WIDTH = 160;
-const ADMIN_MENU_FOLDED_WIDTH = 36;
+const ADMIN_MENU_WIDTH = 0;
+const ADMIN_MENU_FOLDED_WIDTH = 0;
 
 export const GlobalStyle = createGlobalStyle`
   body.edit-story .WebStories_ReactModal__Overlay {
