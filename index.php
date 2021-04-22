@@ -1,3 +1,6 @@
+<?php
+	$url = str_replace('?', '', "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" );
+?>
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
@@ -11,6 +14,11 @@
 	<link rel='stylesheet' href='web-stories-wp/assets/css/vendors-edit-story-rtl.css'/>
 	<link rel='stylesheet' href='web-stories-wp/assets/css/edit-story-rtl.css'/>
 	<link rel='stylesheet' href='web-stories-wp/assets/css/edit-story.css'/>
+	<script>
+		var webStoriesAdConfig = {
+		  url: '<?php echo $url; ?>'
+		}
+	</script>
 </head>
 <body class="edit-story no-js">
 

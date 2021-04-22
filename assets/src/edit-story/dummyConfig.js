@@ -1,3 +1,5 @@
+const url = window.webStoriesAdConfig.url;
+
 export default {
   'id': 'web-stories-editor',
   'config': {
@@ -103,7 +105,7 @@ export default {
     'postType': 'web-story',
     'storyId': 343,
     'dashboardLink': 'https://wordpress.app/wp-admin/edit.php?post_type=web-story&page=stories-dashboard',
-    'assetsURL': 'https://wordpress.app/wp-content/plugins/web-stories-wp/assets/',
+    'assetsURL': `${ url }assets/`,
     'cdnURL': 'https://wp.stories.google/static/main/',
     'maxUpload': 536870912,
     'isDemo': false,
@@ -155,5 +157,5 @@ export default {
     'customMetaBoxes': true,
     'customPageTemplates': false,
   },
-  'publicPath': 'https://wordpress.app/wp-content/plugins/web-stories-wp/assets/js/',
+  'publicPath': `${ url }assets/js/`,
 };
