@@ -28,6 +28,7 @@ import { Button, BUTTON_SIZES, BUTTON_TYPES, BUTTON_VARIANTS } from '../../../..
 import { MediaGalleryMessage, PaneHeader as DefaultPaneHeader, PaneInner, StyledPane } from '../common/styles';
 import { PANE_PADDING } from '../../shared';
 import paneId from './paneId';
+import PaginatedMediaGallery from '../common/paginatedMediaGallery';
 
 export const ROOT_MARGIN = 300;
 
@@ -54,6 +55,22 @@ function MediaItem( { mediaItem } ) {
 
 function MediaList( { media } ) {
 
+  const insertMediaElement = () => {};
+  const setNextPage = () => {};
+
+  return (
+    <PaginatedMediaGallery
+      providerType="local"
+      resources={media}
+      isMediaLoading={ false }
+      isMediaLoaded={ true }
+      hasMore={ false }
+      onInsert={insertMediaElement}
+      setNextPage={setNextPage}
+      searchTerm={ '' }
+    />
+  )
+
   return (
     <MediaListArea>
       { media.map( ( mediaItem ) => <MediaItem key={ mediaItem.name } mediaItem={ mediaItem } /> ) }
@@ -61,26 +78,65 @@ function MediaList( { media } ) {
   );
 }
 
+function getImageAttributes( file ) {
+  return new Promise( ( resolve ) => {
+    const { name, size, type } = file;
+    const src = URL.createObjectURL( file );
+    const img = new Image();
+
+    img.onload = function() {
+      // We also want to URL.revokeObjectURL( src ) to free up memory after image is added to DOM.
+
+      resolve( {
+        width: this.width,
+        height: this.height,
+        name,
+        size,
+        type,
+        src,
+      } );
+    }
+
+    img.src = src;
+  } );
+}
+
 function MediaPane(props) {
   const [ media, setMedia ] = useState( [] );
   const fileInputRef = createRef();
 
-  const handleFileInput = ( event ) => {
+  const handleFileInput = async ( event ) => {
     if ( ! event.target.files.length ) {
       return;
     }
 
     const file = event.target.files[0];
-    const { name, size, type } = file;
-    const src = URL.createObjectURL( file );
     const mediaItems = [ ...media ];
 
-    mediaItems.push( {
+    const {
+      name,
+      size,
+      type,
+      width,
+      height,
+      src,
+    } = await getImageAttributes( file );
+
+    const mediaData = {
       src,
       name,
       size,
-      type
-    } );
+      mimeType: type,
+      type: 'image', // @todo To be updated.
+      alt: '',
+      height,
+      width,
+      id: size,
+      sizes: {},
+      title: name,
+    };
+
+    mediaItems.push( mediaData );
 
     setMedia( mediaItems );
   };
