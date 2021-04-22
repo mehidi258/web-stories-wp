@@ -17,44 +17,24 @@
 /**
  * External dependencies
  */
-import { useFeature } from 'flagged';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { __, _n, sprintf } from '@web-stories-wp/i18n';
+import { __, sprintf } from '@web-stories-wp/i18n';
 import { trackEvent } from '@web-stories-wp/tracking';
 
 /**
  * Internal dependencies
  */
-import {
-  Button,
-  BUTTON_SIZES,
-  BUTTON_TYPES,
-  BUTTON_VARIANTS,
-  Text,
-  THEME_CONSTANTS,
-  DropDown,
-  useSnackbar,
-} from '../../../../../../design-system';
+import { Button, BUTTON_SIZES, BUTTON_TYPES, BUTTON_VARIANTS, useSnackbar } from '../../../../../../design-system';
 import { useConfig } from '../../../../../app/config';
 import { useLocalMedia } from '../../../../../app/media';
 import { useMediaPicker } from '../../../../mediaPicker';
-import { SearchInput } from '../../../common';
 import useLibrary from '../../../useLibrary';
 import { getResourceFromMediaPicker } from '../../../../../app/media/utils';
-import {
-  MediaGalleryMessage,
-  PaneHeader,
-  PaneInner,
-  SearchInputContainer,
-  StyledPane,
-} from '../common/styles';
+import { MediaGalleryMessage, PaneHeader as DefaultPaneHeader, PaneInner, StyledPane } from '../common/styles';
 import PaginatedMediaGallery from '../common/paginatedMediaGallery';
-import Flags from '../../../../../flags';
 import resourceList from '../../../../../utils/resourceList';
-import { Placement } from '../../../../popup';
 import { PANE_PADDING } from '../../shared';
-import { LOCAL_MEDIA_TYPE_ALL } from '../../../../../app/media/local/types';
 import MissingUploadPermissionDialog from './missingUploadPermissionDialog';
 import paneId from './paneId';
 import VideoOptimizationDialog from './videoOptimizationDialog';
@@ -63,30 +43,14 @@ export const ROOT_MARGIN = 300;
 
 const FilterArea = styled.div`
   display: flex;
-  justify-content: space-between;
-  margin-top: 24px;
+  justify-content: flex-end;
   padding: 0 ${PANE_PADDING} 0 ${PANE_PADDING};
 `;
 
-const SearchCount = styled(Text).attrs({
-  size: THEME_CONSTANTS.TYPOGRAPHY.PRESET_SIZES.MEDIUM,
-})`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+const PaneHeader = styled( DefaultPaneHeader )`
+  padding: ${PANE_PADDING} 0 ${PANE_PADDING} 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 `;
-
-const StyledDropDown = styled(DropDown)`
-  background-color: transparent;
-  width: 132px;
-`;
-
-const FILTER_NONE = LOCAL_MEDIA_TYPE_ALL;
-const FILTERS = [
-  { value: FILTER_NONE, label: __('All Types', 'web-stories') },
-  { value: 'image', label: __('Images', 'web-stories') },
-  { value: 'video', label: __('Video', 'web-stories') },
-];
 
 function MediaPane(props) {
   const {
@@ -99,7 +63,6 @@ function MediaPane(props) {
     setNextPage,
     resetWithFetch,
     setMediaType,
-    setSearchTerm,
     uploadVideoPoster,
     totalItems,
   } = useLocalMedia(
@@ -138,21 +101,6 @@ function MediaPane(props) {
     }
   );
 
-  const { showSnackbar } = useSnackbar();
-
-  const {
-    allowedFileTypes,
-    allowedMimeTypes: {
-      image: allowedImageMimeTypes,
-      video: allowedVideoMimeTypes,
-    },
-  } = useConfig();
-
-  const allowedMimeTypes = useMemo(
-    () => [...allowedImageMimeTypes, ...allowedVideoMimeTypes],
-    [allowedImageMimeTypes, allowedVideoMimeTypes]
-  );
-
   const { insertElement } = useLibrary((state) => ({
     insertElement: state.actions.insertElement,
   }));
@@ -160,64 +108,6 @@ function MediaPane(props) {
   const [isPermissionDialogOpen, setIsPermissionDialogOpen] = useState(false);
 
   const isSearching = searchTerm.length > 0;
-
-  const onClose = resetWithFetch;
-
-  /**
-   * Callback of select in media picker to insert media element.
-   *
-   * @param {Object} mediaPickerEl Object coming from backbone media picker.
-   */
-  const onSelect = (mediaPickerEl) => {
-    const resource = getResourceFromMediaPicker(mediaPickerEl);
-    try {
-      // WordPress media picker event, sizes.medium.url is the smallest image
-      insertMediaElement(
-        resource,
-        mediaPickerEl.sizes?.medium?.url || mediaPickerEl.url
-      );
-
-      if (!resource.posterId && !resource.local) {
-        // Upload video poster and update media element afterwards, so that the
-        // poster will correctly show up in places like the Accessibility panel.
-        uploadVideoPoster(resource.id, mediaPickerEl.url);
-      }
-    } catch (e) {
-      showSnackbar({
-        message: e.message,
-        dismissable: true,
-      });
-    }
-  };
-
-  const onSelectErrorMessage = sprintf(
-    /* translators: %s: list of allowed file types. */
-    __('Please choose only %s to insert into page.', 'web-stories'),
-    allowedFileTypes.join(
-      /* translators: delimiter used in a list */
-      __(', ', 'web-stories')
-    )
-  );
-
-  const openMediaPicker = useMediaPicker({
-    onSelect,
-    onSelectErrorMessage,
-    onClose,
-    type: allowedMimeTypes,
-    onPermissionError: () => setIsPermissionDialogOpen(true),
-  });
-
-  /**
-   * Filter REST API calls and re-request API.
-   *
-   * @param {string} value that is passed to rest api to filter.
-   */
-  const onFilter = useCallback(
-    (evt, filter) => {
-      setMediaType({ mediaType: filter });
-    },
-    [setMediaType]
-  );
 
   /**
    * Insert element such image, video and audio into the editor.
@@ -236,13 +126,6 @@ function MediaPane(props) {
     [insertElement]
   );
 
-  const onSearch = (value) => {
-    const trimText = value.trim();
-    if (trimText !== searchTerm) {
-      setSearchTerm({ searchTerm: trimText });
-    }
-  };
-
   useEffect(() => {
     trackEvent('search', {
       search_type: 'media',
@@ -251,62 +134,24 @@ function MediaPane(props) {
     });
   }, [searchTerm, mediaType]);
 
-  const incrementalSearchDebounceMedia = useFeature(
-    Flags.INCREMENTAL_SEARCH_DEBOUNCE_MEDIA
-  );
-
   return (
     <StyledPane id={paneId} {...props}>
       <PaneInner>
         <PaneHeader>
-          <SearchInputContainer>
-            <SearchInput
-              initialValue={searchTerm}
-              placeholder={__('Search', 'web-stories')}
-              onSearch={onSearch}
-              incremental={incrementalSearchDebounceMedia}
-            />
-          </SearchInputContainer>
           <FilterArea>
-            <StyledDropDown
-              selectedValue={mediaType?.toString() || FILTER_NONE}
-              onMenuItemClick={onFilter}
-              options={FILTERS}
-              placement={Placement.BOTTOM_START}
-              fitContentWidth
-            />
-            {isSearching && media.length > 0 && (
-              <SearchCount>
-                {sprintf(
-                  /* translators: %d: number of results. */
-                  _n(
-                    '%d result found',
-                    '%d results found',
-                    totalItems,
-                    'web-stories'
-                  ),
-                  totalItems
-                )}
-              </SearchCount>
-            )}
-            {!isSearching && (
-              <Button
-                variant={BUTTON_VARIANTS.RECTANGLE}
-                type={BUTTON_TYPES.SECONDARY}
-                size={BUTTON_SIZES.SMALL}
-                onClick={openMediaPicker}
-              >
-                {__('Upload', 'web-stories')}
-              </Button>
-            )}
+            <Button
+              variant={BUTTON_VARIANTS.RECTANGLE}
+              type={BUTTON_TYPES.SECONDARY}
+              size={BUTTON_SIZES.SMALL}
+            >
+              {__('Upload', 'web-stories')}
+            </Button>
           </FilterArea>
         </PaneHeader>
 
         {isMediaLoaded && !media.length ? (
           <MediaGalleryMessage>
-            {isSearching
-              ? __('No results found', 'web-stories')
-              : __('No media found', 'web-stories')}
+            { __( 'No media found', 'web-stories' ) }
           </MediaGalleryMessage>
         ) : (
           <PaginatedMediaGallery
