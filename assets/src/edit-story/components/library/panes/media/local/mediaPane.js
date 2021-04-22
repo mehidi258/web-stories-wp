@@ -17,27 +17,17 @@
 /**
  * External dependencies
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { createRef, useState } from 'react';
 import styled from 'styled-components';
-import { __, sprintf } from '@web-stories-wp/i18n';
-import { trackEvent } from '@web-stories-wp/tracking';
+import { __ } from '@web-stories-wp/i18n';
 
 /**
  * Internal dependencies
  */
-import { Button, BUTTON_SIZES, BUTTON_TYPES, BUTTON_VARIANTS, useSnackbar } from '../../../../../../design-system';
-import { useConfig } from '../../../../../app/config';
-import { useLocalMedia } from '../../../../../app/media';
-import { useMediaPicker } from '../../../../mediaPicker';
-import useLibrary from '../../../useLibrary';
-import { getResourceFromMediaPicker } from '../../../../../app/media/utils';
+import { Button, BUTTON_SIZES, BUTTON_TYPES, BUTTON_VARIANTS } from '../../../../../../design-system';
 import { MediaGalleryMessage, PaneHeader as DefaultPaneHeader, PaneInner, StyledPane } from '../common/styles';
-import PaginatedMediaGallery from '../common/paginatedMediaGallery';
-import resourceList from '../../../../../utils/resourceList';
 import { PANE_PADDING } from '../../shared';
-import MissingUploadPermissionDialog from './missingUploadPermissionDialog';
 import paneId from './paneId';
-import VideoOptimizationDialog from './videoOptimizationDialog';
 
 export const ROOT_MARGIN = 300;
 
@@ -52,125 +42,75 @@ const PaneHeader = styled( DefaultPaneHeader )`
   border-bottom: 1px solid rgba(255,255,255,0.08);
 `;
 
+const MediaListArea = styled.div`
+  padding: 1em;
+`;
+
+function MediaItem( { mediaItem } ) {
+    return (
+      <img src={ mediaItem.src } alt="" width="100%" />
+    );
+}
+
+function MediaList( { media } ) {
+
+  return (
+    <MediaListArea>
+      { media.map( ( mediaItem ) => <MediaItem key={ mediaItem.name } mediaItem={ mediaItem } /> ) }
+    </MediaListArea>
+  );
+}
+
 function MediaPane(props) {
-  const {
-    hasMore,
-    media,
-    isMediaLoading,
-    isMediaLoaded,
-    mediaType,
-    searchTerm,
-    setNextPage,
-    resetWithFetch,
-    setMediaType,
-    uploadVideoPoster,
-    totalItems,
-  } = useLocalMedia(
-    ({
-      state: {
-        hasMore,
-        media,
-        isMediaLoading,
-        isMediaLoaded,
-        mediaType,
-        searchTerm,
-        totalItems,
-      },
-      actions: {
-        setNextPage,
-        resetWithFetch,
-        setMediaType,
-        setSearchTerm,
-        uploadVideoPoster,
-      },
-    }) => {
-      return {
-        hasMore,
-        media,
-        isMediaLoading,
-        isMediaLoaded,
-        mediaType,
-        searchTerm,
-        totalItems,
-        setNextPage,
-        resetWithFetch,
-        setMediaType,
-        setSearchTerm,
-        uploadVideoPoster,
-      };
+  const [ media, setMedia ] = useState( [] );
+  const fileInputRef = createRef();
+
+  const handleFileInput = ( event ) => {
+    if ( ! event.target.files.length ) {
+      return;
     }
-  );
 
-  const { insertElement } = useLibrary((state) => ({
-    insertElement: state.actions.insertElement,
-  }));
+    const file = event.target.files[0];
+    const { name, size, type } = file;
+    const src = URL.createObjectURL( file );
+    const mediaItems = [ ...media ];
 
-  const [isPermissionDialogOpen, setIsPermissionDialogOpen] = useState(false);
+    mediaItems.push( {
+      src,
+      name,
+      size,
+      type
+    } );
 
-  const isSearching = searchTerm.length > 0;
-
-  /**
-   * Insert element such image, video and audio into the editor.
-   *
-   * @param {Object} resource Resource object
-   * @return {null|*} Return onInsert or null.
-   */
-  const insertMediaElement = useCallback(
-    (resource, thumbnailURL) => {
-      resourceList.set(resource.id, {
-        url: thumbnailURL,
-        type: 'cached',
-      });
-      insertElement(resource.type, { resource });
-    },
-    [insertElement]
-  );
-
-  useEffect(() => {
-    trackEvent('search', {
-      search_type: 'media',
-      search_term: searchTerm,
-      search_filter: mediaType,
-    });
-  }, [searchTerm, mediaType]);
+    setMedia( mediaItems );
+  };
 
   return (
     <StyledPane id={paneId} {...props}>
       <PaneInner>
         <PaneHeader>
           <FilterArea>
+            <input type="file" ref={ fileInputRef } onChange={handleFileInput} hidden />
             <Button
               variant={BUTTON_VARIANTS.RECTANGLE}
               type={BUTTON_TYPES.SECONDARY}
               size={BUTTON_SIZES.SMALL}
+              onClick={ () => fileInputRef.current && fileInputRef.current.click() }
             >
               {__('Upload', 'web-stories')}
             </Button>
           </FilterArea>
         </PaneHeader>
 
-        {isMediaLoaded && !media.length ? (
+        { ! media.length ? (
           <MediaGalleryMessage>
             { __( 'No media found', 'web-stories' ) }
           </MediaGalleryMessage>
         ) : (
-          <PaginatedMediaGallery
-            providerType="local"
-            resources={media}
-            isMediaLoading={isMediaLoading}
-            isMediaLoaded={isMediaLoaded}
-            hasMore={hasMore}
-            onInsert={insertMediaElement}
-            setNextPage={setNextPage}
-            searchTerm={searchTerm}
+          <MediaList
+            media={ media }
           />
         )}
-
-        <MissingUploadPermissionDialog
-          open={isPermissionDialogOpen}
-          onClose={() => setIsPermissionDialogOpen(false)}
-        />
-        <VideoOptimizationDialog />
       </PaneInner>
     </StyledPane>
   );
