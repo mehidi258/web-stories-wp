@@ -29,16 +29,30 @@ import useAdStory from '../../../app/storyAd/useAdStory';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import getStoryPropsToSave from '../../../app/story/utils/getStoryPropsToSave';
+import { DATA_VERSION } from '@web-stories-wp/migration';
 
 function DownloadZip() {
   const [isDownloading, setIsDownloading] = useState(false);
-  const { story, pages, currentPage } = useStory(
-    ( { state: { story, pages, currentPage } } ) => ( {
-      story,
-      pages,
-      currentPage,
-    } ),
-  );
+  const {
+    internal: { reducerState },
+  } = useStory();
+
+  const {
+    pages,
+    current,
+    selection,
+    story,
+  } = reducerState;
+
+  const storyData = {
+    current,
+    selection,
+    story: { globalStoryStyles: story?.globalStoryStyles },
+    version: DATA_VERSION,
+    pages,
+  };
+
+  const currentPage = pages[0];
 
   const {
     state: { ctaLink, ctaText, landingPageType },
@@ -56,10 +70,7 @@ function DownloadZip() {
 
     const zip = new JSZip();
 
-    zip.file( 'config.json', JSON.stringify( {
-      currentPage,
-      story
-    } ) );
+    zip.file( 'config.json', JSON.stringify( storyData ) );
 
     await Promise.all( imageUrls.map( async ( url, index ) => {
       const imageResponse = await fetch( url );
