@@ -8,12 +8,12 @@
 	<title>Web Story Ad</title>
 
 	<!-- /wp-admin/load-styles.php?load[chunk_0]=common -->
-	<link rel='stylesheet' href='assets/wp-assets/load-style-php.css'/>
+	<link rel='stylesheet' href='<?php echo $url; ?>assets/wp-assets/load-style-php.css'/>
 	<link rel='stylesheet' crossorigin='anonymous' href='https://fonts.googleapis.com/css?family=Google+Sans%7CGoogle+Sans%3Ab%7CGoogle+Sans%3A500&#038;display=swap&#038;ver=1.7.0-alpha.0'/>
-	<link rel='stylesheet' href='web-stories-wp/assets/css/vendors-edit-story.css'/>
-	<link rel='stylesheet' href='web-stories-wp/assets/css/vendors-edit-story-rtl.css'/>
-	<link rel='stylesheet' href='web-stories-wp/assets/css/edit-story-rtl.css'/>
-	<link rel='stylesheet' href='web-stories-wp/assets/css/edit-story.css'/>
+	<link rel='stylesheet' href='<?php echo $url; ?>web-stories-wp/assets/css/vendors-edit-story.css'/>
+	<link rel='stylesheet' href='<?php echo $url; ?>web-stories-wp/assets/css/vendors-edit-story-rtl.css'/>
+	<link rel='stylesheet' href='<?php echo $url; ?>web-stories-wp/assets/css/edit-story-rtl.css'/>
+	<link rel='stylesheet' href='<?php echo $url; ?>web-stories-wp/assets/css/edit-story.css'/>
 	<script>
 		var webStoriesAdConfig = {
 		  url: '<?php echo $url; ?>'
@@ -40,10 +40,10 @@
 		</div>
 	</div>
 
-	<script src='assets/wp-assets/wp-polyfill.min.js'></script>
-	<script src='assets/wp-assets/load-scripts.js'></script> <!-- /wp-admin/load-scripts.php?load[chunk_0]=wp-i18n -->
-	<script src='assets/wp-assets/url.min.js'></script>
-	<script src='assets/wp-assets/api-fetch.min.js'></script>
+	<script src='<?php echo $url; ?>assets/wp-assets/wp-polyfill.min.js'></script>
+	<script src='<?php echo $url; ?>assets/wp-assets/load-scripts.js'></script> <!-- /wp-admin/load-scripts.php?load[chunk_0]=wp-i18n -->
+	<script src='<?php echo $url; ?>assets/wp-assets/url.min.js'></script>
+	<script src='<?php echo $url; ?>assets/wp-assets/api-fetch.min.js'></script>
 
 	<?php
 	$chunks_file =  __DIR__ . '/assets/js/edit-story.chunks.php';
@@ -51,11 +51,11 @@
 
 	if ( ! empty( $chunks['js'] ) && is_array( $chunks['js'] ) ) {
 		foreach ( $chunks['js'] as $file_name ) {
-			printf( '<script src="assets/js/%s.js"></script>', $file_name );
+			printf( '<script src="%sassets/js/%s.js"></script>', $url, $file_name );
 		}
 	}
 	?>
-	<script src='assets/js/edit-story.js'></script>
+	<script src='<?php echo $url; ?>assets/js/edit-story.js'></script>
 
 </body>
 </html>
